@@ -7,9 +7,12 @@
 #intellij IDEA
 *.iml
 .idea/
+
+
 ######other####
 .project
 .classpath
 .settings/
 target/
 bin/
+
