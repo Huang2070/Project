@@ -1,0 +1,15 @@
+#java ######
+*.class
+
+# Package Files #
+*.jar
+*.war
+#intellij IDEA
+*.iml
+.idea/
+######other####
+.project
+.classpath
+.settings/
+target/
+bin/
