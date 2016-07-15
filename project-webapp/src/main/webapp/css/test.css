@@ -1,0 +1,65 @@
+body{
+    background: url(http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/ignasi_pattern_s.png);
+}
+
+#wrapper{
+    width: 90%;
+    max-width: 1100px;
+    min-width: 300px;
+    margin: 50px auto;
+}
+
+#columns{
+    /* the column-count property easily splits the content of a div into 3 columns. it's not accepted by most browsers on its own, so it's a good idea to use this with all the appropriate prefixes */
+    -webkit-column-count: 3;
+    -webkit-column-gap: 15px;
+    -webkit-column-fill: auto;
+}
+
+.pin{
+    display: inline-block;
+    background: #FEFEFE;
+    border: 2px solid #FAFAFA;
+    box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
+    margin: 0 2px 15px;
+    column-break-inside: avoid;
+    padding: 15px;
+    padding-bottom: 5px;
+    /* let's give the background of the pins a little dimension by using a gradient */
+    background: linear-gradient(45deg, #FFF, #F9F9F9);
+    opacity: 1;
+    transition: all .2s ease;
+    cursor: pointer;
+}
+
+.pin img{
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding-bttom: 15px;
+    margin-bottom: 5px;
+}
+
+.pin p{
+    font-size: 13px;
+    font-family: Helvetica, sans-serif;
+    color: #333;
+    margin: 0;
+}
+
+#columns:hover .pin:not(:hover){
+    opacity: 0.4;
+    /* this makes it so that when you hover over a pin, every pin EXCEPT the one that's hovere on gets a little less opaque */
+}
+
+/* a little responsive styling */
+@media (min-width: 960px){
+    #columns{
+        -webkit-column-count: 4;
+    }
+}
+
+@media (min-width: 1100px){
+    #columns{
+        -webkit-column-count: 5;
+    }
+}

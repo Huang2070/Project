@@ -12,10 +12,10 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/test")
-public class TestController {
+@RequestMapping("/restful")
+public class RestfulController {
 
-    private static Log log = LogFactory.getLog(TestController.class);
+    private static Log log = LogFactory.getLog(RestfulController.class);
 
     @RequestMapping(value="/testMap/{str}", method = RequestMethod.GET)
     public Map<?,?> testString(@PathVariable String str) {
@@ -27,4 +27,7 @@ public class TestController {
         map.put("lastName", "jin");
         return map;
     }
+
+
+
 }
