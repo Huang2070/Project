@@ -1,5 +1,6 @@
 package com.huangjin.controller;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +30,28 @@ public class RestfulController {
         map.put("firstName", "huangjin");
         map.put("lastName", "jin");
         return map;
+    }
+
+
+    @RequestMapping(value="/testPrint")
+    public void testPrint(HttpServletRequest request, HttpServletResponse response) {
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+            writer.print("huangjin");
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != writer) {
+                writer.close();
+            }
+        }
+    }
+
+    @RequestMapping(value="/testString")
+    public String testString(HttpServletRequest request, HttpServletResponse response) {
+        return "test1";
     }
 
 

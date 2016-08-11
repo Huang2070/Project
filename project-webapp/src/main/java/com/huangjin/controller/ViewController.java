@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +36,10 @@ public class ViewController {
 
     //返回字符串,自动转换为资源
     @RequestMapping(value="/getView2")
-    public String testView2(Model model) {
-        model.addAttribute("username", "huangjin");
-        return "test1";
+    public String testView2(HttpServletRequest request, HttpServletResponse response) {
+        String info = (String)request.getSession().getAttribute("test");
+        log.info(info);
+        return "printCookies";
     }
 
     //加上注解后返回字符串
@@ -104,5 +107,21 @@ public class ViewController {
     public ModelAndView testView11() {
         RedirectView view = new RedirectView("/view/getView1");
         return new ModelAndView(view);
+    }
+
+    @RequestMapping(value="testPrint")
+    public void testPrint(HttpServletRequest request, HttpServletResponse response) {
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+            writer.print("huangjin");
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != writer) {
+                writer.close();
+            }
+        }
     }
 }
