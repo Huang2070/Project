@@ -1,6 +1,6 @@
 package com.huangjin.controller;
 
-import com.huangjin.model.User;
+import com.huangjin.domain.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;

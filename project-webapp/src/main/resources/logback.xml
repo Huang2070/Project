@@ -1,25 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <configuration>
+<configuration>
 
-     <!-- 控制台输出 -->
+    <!-- 控制台输出 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%date [%thread] %-5level %logger{0} - %msg%n</Pattern>
         </encoder>
     </appender>
 
-    <logger name="java.sql.Connection" additivity="false" level="info">
+
+    <!-- 时间滚动输出日志 -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>/log/ipregion-service/log.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+
+    <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+
+    <logger name="org.springframework" level="WARN" />
+
+    <logger name="java.sql.Connection" additivity="false" level="INFO">
         <appender-ref ref="stdout"/>
     </logger>
-    <logger name="java.sql.PreparedStatement" level="info">
-        <appender-ref ref="stdout"/>
-    </logger>
-    <logger name="com.letv.cms.ndao" level="info">
+    <logger name="java.sql.PreparedStatement" level="INFO">
         <appender-ref ref="stdout"/>
     </logger>
 
-     <root level="INFO">
-         <appender-ref ref="stdout" />
-     </root>
- 
- </configuration>
+
+    <root level="INFO">
+        <appender-ref ref="stdout" />
+    </root>
+
+</configuration>
