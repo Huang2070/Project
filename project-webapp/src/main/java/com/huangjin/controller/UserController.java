@@ -16,30 +16,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping({"/user"})
 public class UserController {
+
     private static Log logger = LogFactory.getLog(RestfulController.class);
-    @Resource(
-            name = "userService"
-    )
+
+    @Resource(name = "userService")
     private UserService userService;
 
-    public UserController() {
-    }
 
-    @RequestMapping(
-            value = {"/{username}"},
-            method = {RequestMethod.GET}
-    )
-    public List<User> listUser(@PathVariable String username) {
-        Object list = new ArrayList();
-        User user = new User();
-        user.setUsername(username);
+    @RequestMapping(value = "/hehe", method = RequestMethod.GET)
+    public List<User> listUser(User user, String username) {
+        System.out.println(user);
+        System.out.println(username);
 
-        try {
-            list = this.userService.selectList(user);
-        } catch (Exception e) {
-            logger.error("查询用户出错", e);
-        }
 
-        return (List)list;
+//        List<User> list = new ArrayList<>();
+//        User user = new User();
+//        user.setUsername(username);
+//
+//        try {
+//            list = userService.selectList(user);
+//        } catch (Exception e) {
+//            logger.error("查询用户出错", e);
+//        }
+
+        return null;
     }
 }

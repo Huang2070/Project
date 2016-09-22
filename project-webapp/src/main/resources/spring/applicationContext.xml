@@ -7,6 +7,9 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-3.2.xsd ">
 
+
+	<bean id="springUtil" class="com.huangjin.util.SpringUtil" />
+
 	<import resource="classpath:/spring/applicationContext-mybatis.xml" />
 
 </beans>

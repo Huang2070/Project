@@ -5,6 +5,8 @@
 
 <generatorConfiguration>
 
+    <classPathEntry location="C:/Users\huang/.m2/repository/mysql/mysql-connector-java/5.1.35/mysql-connector-java-5.1.35.jar" />
+
     <context id="generatorTables" targetRuntime="MyBatis3">
 
         <!--  <plugin type="org.mybatis.generator.plugins.MapperConfigPlugin">
@@ -23,13 +25,13 @@
 
         <!-- commentGenerator 去除自动生成的注释  true:去除 false:不去除-->
         <commentGenerator>
-            <property name="suppressDate" value="true"/>
+            <property name="suppressDate" value="false"/>
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://10.11.147.73:3306/theProject?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull"
-                        userId="huangjin"
-                        password="huangjin">
+                        connectionURL="jdbc:mysql://10.11.144.63:8080/cloud_cms?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull"
+                        userId="cms"
+                        password="YjI5NDkwZDgwZTh">
         </jdbcConnection>
 
         <!--
@@ -63,7 +65,7 @@
         </javaClientGenerator>
 
         <!-- tableName:用于自动生成代码的数据库表；domainObjectName:对应于数据库表的javaBean类名,这里避免生成example类 -->
-        <table schema="theProject" tableName="user"
+        <table schema="cloud_cms" tableName="cms_mlive_mgt"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
