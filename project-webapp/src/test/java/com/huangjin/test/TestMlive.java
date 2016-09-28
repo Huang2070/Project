@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by huangjin on 2016/8/4.
  */
-public class TestUtil {
+public class TestMlive {
     public static void main(String[] args) {
 
         //正式环境
@@ -44,18 +44,29 @@ public class TestUtil {
 //        String secretkey = "6bd7b3fcf5cda8d880ed8cc36f462714";
 
         //T2
+//        String url = "http://api.open.lecloud.com/live/execute";
+//        String method = "lecloud.mobileLive.app.list";
+//        String timestamp = System.currentTimeMillis() + "";
+//        String ver = "1.0";
+//        String userid = "400001";
+//
+//        String secretkey = "b89cebfb083f286c27d786992069613e";
+
+
+        //T2
         String url = "http://api.open.lecloud.com/live/execute";
-        String method = "lecloud.mobileLive.app.list";
+        String method = "lecloud.mobileLive.stream.list";
         String timestamp = System.currentTimeMillis() + "";
-        String ver = "1.0";
+        String ver = "1.1";
         String userid = "400001";
+        String pushDomain = "367.mpusht2.live.lecloud.com";
+        String size = "1000";
 
         String secretkey = "b89cebfb083f286c27d786992069613e";
 
+        //String buf = "method" + method + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
 
-        String buf = "method" + method + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
-
-        //String buf = "method" + method + "pushDomain" + pushDomain + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
+        String buf = "method" + method + "pushDomain" + pushDomain + "size" + size + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
         String sign = Md5Util.MD5(buf);
 
 
@@ -63,11 +74,13 @@ public class TestUtil {
         Map<String, String> param = new HashMap<>();
         param.put("method", method);
         param.put("timestamp", timestamp);
-        param.put("ver", "1.0");
+        param.put("ver", ver);
         param.put("userid", userid);
         param.put("sign", sign);
 
-        //param.put("pushDomain", pushDomain);
+        param.put("size", size);
+
+        param.put("pushDomain", pushDomain);
 
 
         String result = HttpClientUtils.post(url, param, "UTF-8");

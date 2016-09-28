@@ -12,7 +12,7 @@ import org.apache.commons.collections.MapUtils;
 /**
  * Created by huang on 2016-9-5.
  */
-public class Testlalala {
+public class TestCms {
     public static void main(String[] args) {
 //        String url = "http://i.api.cms.lecloud.com/live/liveInfo/modify";
 //

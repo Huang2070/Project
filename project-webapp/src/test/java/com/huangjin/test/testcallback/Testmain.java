@@ -1,4 +1,4 @@
-package com.huangjin.testcallback;
+package com.huangjin.test.testcallback;
 
 /**
  * Created by huang on 2016-9-7.
