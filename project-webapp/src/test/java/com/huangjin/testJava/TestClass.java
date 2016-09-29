@@ -1,4 +1,4 @@
-package com.huangjin.test;
+package com.huangjin.testJava;
 
 
 //@RunWith(SpringJUnit4ClassRunner.class)

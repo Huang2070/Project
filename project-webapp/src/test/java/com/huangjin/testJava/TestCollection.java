@@ -1,4 +1,4 @@
-package com.huangjin.test;
+package com.huangjin.testJava;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,13 +11,6 @@ import java.util.List;
 public class TestCollection {
 
     public static void main(String[] args) {
-        List<String> list = new ArrayList<>();
 
-        list.add("abc");
-        list.add("cba");
-        list.add("aac");
-
-        Collections.sort(list);
-        System.out.println(list);
     }
 }

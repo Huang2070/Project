@@ -25,20 +25,15 @@ public class UserController {
 
     @RequestMapping(value = "/hehe", method = RequestMethod.GET)
     public List<User> listUser(User user, String username) {
-        System.out.println(user);
-        System.out.println(username);
 
+        List<User> list = new ArrayList<>();
 
-//        List<User> list = new ArrayList<>();
-//        User user = new User();
-//        user.setUsername(username);
-//
-//        try {
-//            list = userService.selectList(user);
-//        } catch (Exception e) {
-//            logger.error("查询用户出错", e);
-//        }
+        try {
+            list = userService.selectList(user);
+        } catch (Exception e) {
+            logger.error("查询用户出错", e);
+        }
 
-        return null;
+        return list;
     }
 }

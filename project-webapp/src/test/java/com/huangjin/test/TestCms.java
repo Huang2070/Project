@@ -14,18 +14,19 @@ import org.apache.commons.collections.MapUtils;
  */
 public class TestCms {
     public static void main(String[] args) {
-//        String url = "http://i.api.cms.lecloud.com/live/liveInfo/modify";
+  //      String url = "http://i.api.cms.lecloud.com/live/liveInfo/modify";
+//        String url = "http://localhost:83/live/liveInfo/modify";
 //
 //        String ts = System.currentTimeMillis() + "";
 //
 //        Map<String, String> map = new HashMap<>();
 //
-//        map.put("userid", "1111111532");
-//        map.put("uid", "49561");
+//        map.put("userid", "400001");
+//        map.put("uid", "56838");
 //        map.put("ts", ts);
-//        map.put("liveName", "hehe");
+//        map.put("liveName", "陶志娇18500852581aaa");
 //
-//        String buff = "/live/liveInfo/modify" + "uc" + "6789" + ts;
+//        String buff = "/live/liveInfo/modify" + "proxy" + "1234" + ts;
 //        String token = Md5Util.MD5(buff);
 //        map.put("token", token);
 //
@@ -35,18 +36,19 @@ public class TestCms {
 
 
 
-        String url = "http://i.api.cms.lecloud.com/live/liveInfo/updateState";
+        //String url = "http://i.api.cms.lecloud.com/live/liveInfo/updateState";
+        String url = "http://localhost:83/live/liveInfo/updateState";
 
         String ts = System.currentTimeMillis() + "";
 
         Map<String, String> map = new HashMap<>();
 
-        map.put("userid", "1111111532");
-        map.put("uid", "49561");
+        map.put("userid", "400001");
+        map.put("uid", "56838");
         map.put("ts", ts);
         map.put("state", 1 + "");
 
-        String buff = "/live/liveInfo/updateState" + "uc" + "6789" + ts;
+        String buff = "/live/liveInfo/updateState" + "proxy" + "1234" + ts;
         String token = Md5Util.MD5(buff);
         map.put("token", token);
 
