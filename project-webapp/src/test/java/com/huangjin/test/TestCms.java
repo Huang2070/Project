@@ -36,25 +36,30 @@ public class TestCms {
 
 
 
-        //String url = "http://i.api.cms.lecloud.com/live/liveInfo/updateState";
-        String url = "http://localhost:83/live/liveInfo/updateState";
-
-        String ts = System.currentTimeMillis() + "";
+        String url = "http://localhost:811/channel/programa/get";
 
         Map<String, String> map = new HashMap<>();
-
-        map.put("userid", "400001");
-        map.put("uid", "56838");
-        map.put("ts", ts);
-        map.put("state", 1 + "");
-
-        String buff = "/live/liveInfo/updateState" + "proxy" + "1234" + ts;
-        String token = Md5Util.MD5(buff);
-        map.put("token", token);
+        map.put("userId", "1111111567");
+        map.put("id", "974");
+        map.put("name", "huangjin");
+        map.put("playControlPlatform", "huangjin");
 
         String result = HttpClientUtils.post(url, map, "UTF-8");
-
         System.out.println("result:" + result);
+
+
+//        String url = "http://localhost:811/channel/programa/content/create";
+//        Map<String, String> map = new HashMap<>();
+//        map.put("userId", "1111111532");
+//        map.put("id", "1837");
+//        map.put("type", "3");
+//        map.put("title", "经典车形状");
+//        map.put("priority", "3");
+//        map.put("bid", "876");
+//
+//        String result = HttpClientUtils.post(url, map, "UTF-8");
+//        System.out.println("result:" + result);
+
 
     }
 }

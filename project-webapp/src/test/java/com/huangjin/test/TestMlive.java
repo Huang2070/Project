@@ -34,14 +34,14 @@ public class TestMlive {
 //        String secretkey = "6bd7b3fcf5cda8d880ed8cc36f462714";
 
         //T1
-//        String url = "http://api.open.lecloud.com/live/execute";
-//        String method = "lecloud.mobileLive.stream.list";
-//        String timestamp = System.currentTimeMillis() + "";
-//        String ver = "1.1";
-//        String userid = "1111111532";
-//        String pushDomain = "359.mpushtest.live.lecloud.com";
-//
-//        String secretkey = "6bd7b3fcf5cda8d880ed8cc36f462714";
+        String url = "http://api.open.lecloud.com/live/execute";
+        String method = "lecloud.mobileLive.stream.list";
+        String timestamp = System.currentTimeMillis() + "";
+        String ver = "1.1";
+        String userid = "1111111532";
+        String pushDomain = "359.mpushtest.live.lecloud.com";
+
+        String secretkey = "6bd7b3fcf5cda8d880ed8cc36f462714";
 
         //T2
 //        String url = "http://api.open.lecloud.com/live/execute";
@@ -53,20 +53,22 @@ public class TestMlive {
 //        String secretkey = "b89cebfb083f286c27d786992069613e";
 
 
-        //T2
-        String url = "http://api.open.lecloud.com/live/execute";
-        String method = "lecloud.mobileLive.stream.list";
-        String timestamp = System.currentTimeMillis() + "";
-        String ver = "1.1";
-        String userid = "400001";
-        String pushDomain = "367.mpusht2.live.lecloud.com";
-        String size = "1000";
+        //线上
+//        String url = "http://api.open.lecloud.com/live/execute";
+//        String method = "lecloud.mobileLive.stream.list";
+//        String timestamp = System.currentTimeMillis() + "";
+//        String ver = "1.1";
+//        String userid = "864650";
+//        String pushDomain = "12921.mpush.live.lecloud.com";
+//        String size = "1000";
+//
+//        String secretkey = "7bc461b03a6096e14b067a4440c54e8c";
 
-        String secretkey = "b89cebfb083f286c27d786992069613e";
 
-        //String buf = "method" + method + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
 
-        String buf = "method" + method + "pushDomain" + pushDomain + "size" + size + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
+//        //String buf = "method" + method + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
+//
+        String buf = "method" + method + "pushDomain" + pushDomain + "timestamp" + timestamp + "userid" + userid  + "ver" + ver + secretkey;
         String sign = Md5Util.MD5(buf);
 
 
@@ -77,9 +79,6 @@ public class TestMlive {
         param.put("ver", ver);
         param.put("userid", userid);
         param.put("sign", sign);
-
-        param.put("size", size);
-
         param.put("pushDomain", pushDomain);
 
 

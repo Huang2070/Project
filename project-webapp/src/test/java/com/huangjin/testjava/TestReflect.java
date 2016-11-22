@@ -1,4 +1,4 @@
-package com.huangjin.testJava;
+package com.huangjin.testjava;
 
 import org.junit.Test;
 
