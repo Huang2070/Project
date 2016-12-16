@@ -9,9 +9,12 @@ import java.util.EnumSet;
  */
 public class TestEnum {
     public static void main(String[] args) {
-        EnumSet<ShareEnum> weekSet = EnumSet.allOf(ShareEnum.class);
-        for (ShareEnum item : weekSet) {
-            System.out.println(item.getShareName());
-        }
+//        EnumSet<ShareEnum> weekSet = EnumSet.allOf(ShareEnum.class);
+//        for (ShareEnum item : weekSet) {
+//            System.out.println(item.getShareName());
+//        }
+
+        String str = "200";
+        System.out.println(str == "200");
     }
 }

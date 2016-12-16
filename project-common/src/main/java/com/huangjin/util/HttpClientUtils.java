@@ -34,7 +34,7 @@ public class HttpClientUtils {
 
 //	private static final int TIMEOUT = 2000;
 
-	 private static final int TIMEOUT = 10000;
+	 private static final int TIMEOUT = 100000;
 
 	public static String post(String weburl, Map<String, String> params,
 							  String encoding) {

@@ -173,7 +173,7 @@ public class ListDiffUtil {
     }
 
     /**
-     * 获取连个List的不同元素
+     * 获取两个List的不同元素
      *
      * @param list1
      * @param list2

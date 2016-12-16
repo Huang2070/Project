@@ -28,10 +28,8 @@ public class HttpUtil {
 	/**
 	 * POST请求
 	 * 
-	 * @param urlPath
-	 *            发送请求的URL
-	 * @param data
-	 *            请求参数
+	 * @param urlPath 发送请求的URL
+	 * @param data 请求参数
 	 * @return sTotalString 相应结果
 	 */
 	public static String post(String urlPath, String data) {
@@ -41,10 +39,8 @@ public class HttpUtil {
 	/**
 	 * put请求
 	 * 
-	 * @param urlPath
-	 *            发送请求的URL
-	 * @param data
-	 *            请求参数
+	 * @param urlPath 发送请求的URL
+	 * @param data 请求参数
 	 * @return sTotalString 相应结果
 	 */
 	public static String put(String urlPath, String data) {
@@ -54,10 +50,8 @@ public class HttpUtil {
 	/**
 	 * delete请求
 	 * 
-	 * @param urlPath
-	 *            发送请求的URL
-	 * @param data
-	 *            请求参数
+	 * @param urlPath 发送请求的URL
+	 * @param data 请求参数
 	 * @return sTotalString 相应结果
 	 */
 	public static String delete(String urlPath, String data) {
@@ -99,8 +93,7 @@ public class HttpUtil {
 
 			// 定义 BufferedReader输入流来读取URL的响应
 			String sCurrentLine = "";
-			reader = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			while ((sCurrentLine = reader.readLine()) != null) {
 				sTotalString += sCurrentLine + "\r\n";
 			}
@@ -121,10 +114,8 @@ public class HttpUtil {
 	/**
 	 * POST请求
 	 * 
-	 * @param urlPath
-	 *            发送请求的URL
-	 * @param data
-	 *            请求参数
+	 * @param urlPath 发送请求的URL
+	 * @param data 请求参数
 	 * @return sTotalString 相应结果
 	 */
 	public static String post(String urlPath, String data, Map<String, String> header) {
@@ -194,10 +185,8 @@ public class HttpUtil {
 	/**
 	 * put请求
 	 * 
-	 * @param urlPath
-	 *            发送请求的URL
-	 * @param data
-	 *            请求参数
+	 * @param urlPath 发送请求的URL
+	 * @param data 请求参数
 	 * @return sTotalString 相应结果
 	 */
 	public static String put(String urlPath, String data, Map<String, String> header) {

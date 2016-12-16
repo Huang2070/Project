@@ -1,12 +1,9 @@
-package com.huangjin.test;
+package com.huangjin.testcms;
 
 import com.huangjin.util.HttpClientUtils;
-import com.huangjin.util.HttpUtil;
 import com.huangjin.util.Md5Util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -1,4 +1,4 @@
-package com.huangjin.test;
+package com.huangjin.testcms;
 
 import com.huangjin.util.HttpClientUtils;
 

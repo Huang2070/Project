@@ -15,7 +15,7 @@ public class TestTransStream {
             String buffer = null;
             while((buffer = br.readLine()) != null) {
                 if(buffer.equals("exit")) {
-                    System.exit(1);
+                    System.exit(0);
                 }
                 System.out.println(buffer);
             }
