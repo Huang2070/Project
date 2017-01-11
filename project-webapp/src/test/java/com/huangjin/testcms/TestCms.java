@@ -1,40 +1,64 @@
 package com.huangjin.testcms;
 
 
+import com.huangjin.util.HttpClientUtils;
+import com.huangjin.util.Md5Util;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by huang on 2016-9-5.
  */
 public class TestCms {
     public static void main(String[] args) {
-  //      String url = "http://i.api.cms.lecloud.com/live/liveInfo/modify";
-//        String url = "http://localhost:83/live/liveInfo/modify";
+        //api请求 POST方法
+        //String url = "http://i.api.cms.lecloud.com/live/liveInfo/modify";
+//        String url = "http://localhost:83/live/getMliveThemeList/" + 22222 + ;
 //
 //        String ts = System.currentTimeMillis() + "";
 //
 //        Map<String, String> map = new HashMap<>();
-//
-//        map.put("userid", "400001");
-//        map.put("uid", "56838");
+//        map.put("userid", "22222");
 //        map.put("ts", ts);
-//        map.put("liveName", "陶志娇18500852581aaa");
 //
-//        String buff = "/live/liveInfo/modify" + "proxy" + "1234" + ts;
+//        String interfaceName = "/live/getMliveThemeList/{userId}";
+//        String buff = interfaceName + "hsea" + "2345" + ts;
 //        String token = Md5Util.MD5(buff);
 //        map.put("token", token);
 //
-//        String result = HttpClientUtils.post(url, map, "UTF-8");
+//        String result = HttpClientUtils.get(url);
 //
 //        System.out.println("result:" + result);
 
 
+        //api请求 GET方法
+        String interfaceName = "/live/getMliveThemeList/{userId}";
+        String ts = System.currentTimeMillis() + "";
+        String buff = interfaceName + "hsea" + "2345" + ts;
+        String token = Md5Util.MD5(buff);
+        //String url = "http://api.cms.lecloud.com/live/getMliveThemeList/" + 400001 + "?token=" + token + "&ts=" + ts;
+        String url = "http://localhost:83/live/getMliveThemeList/" + 400001 + "?token=" + token + "&ts=" + ts;
+        String result = HttpClientUtils.get(url);
 
-//        String url = "http://localhost:811/channel/programa/get";
+        System.out.println("result:" + result);
+
+
+        //String url = "http://localhost:83/live/getMliveThemeList/" + 22222 + "?token=" + token + "&ts=" + ts;
+
+
+        //api请求 POST方法
+//        String url = "http://localhost:83/live/modifyThemeState/" + 22222 + "/" + 2;
+//
+//        String interfaceName = "/live/modifyThemeState/{userId}/{themeType}";
+//        String ts = System.currentTimeMillis() + "";
+//        String buff = interfaceName + "hsea" + "2345" + ts;
+//        String token = Md5Util.MD5(buff);
 //
 //        Map<String, String> map = new HashMap<>();
-//        map.put("userId", "1111111567");
-//        map.put("id", "974");
-//        map.put("name", "huangjin");
-//        map.put("playControlPlatform", "huangjin");
+//        map.put("token", token);
+//        map.put("ts", ts);
 //
 //        String result = HttpClientUtils.post(url, map, "UTF-8");
 //        System.out.println("result:" + result);
@@ -81,4 +105,5 @@ public class TestCms {
 //        System.out.println("result:" + result);
 
     }
+
 }

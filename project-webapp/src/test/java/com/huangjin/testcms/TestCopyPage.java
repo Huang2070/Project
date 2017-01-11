@@ -14,10 +14,10 @@ public class TestCopyPage {
 
     @Test
     public void test1() {
-        String token = Md5Util.MD5("/frame/copyAllAppPage/" + 400001);
+        String token = Md5Util.MD5("/frame/copyAllAppPage/" + 110);
 
-        String url = "http://api.m.cms.lecloud.com/frame/copyAllAppPage/12345/1/" + token;
-        //String url = "http://localhost:822/frame/copyAllAppPage/400001/-1/" + token;
+        String url = "http://api.m.cms.lecloud.com/frame/copyAllAppPage/110/1/" + token;
+        //String url = "http://localhost:822/frame/copyAllAppPage/110/1/" + token;
 
         Map<String, String> param = new HashMap<>();
 
