@@ -4,24 +4,16 @@ package com.huangjin.testjava;
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = {"classpath:spring/*"})
 
+import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class TestClass {
-    //@Test
-    public Dog dog = new Dog("haha");
-    public static void main(String[] args) {
-        TestClass test = new TestClass();
-        System.out.println(test.dog.status);
-    }
-}
+    @Test
+    public void tset() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-class Dog {
-    public String status;
-
-    public Dog(String str) {
-        this.status = str;
-    }
-    protected void finalize() {
-        if(status.equals("full")) {
-            System.out.println("error");
-        }
+        System.out.println(sdf.format(Long.parseLong("1484809379000")));
     }
 }

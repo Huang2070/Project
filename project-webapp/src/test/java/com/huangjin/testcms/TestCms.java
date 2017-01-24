@@ -34,34 +34,33 @@ public class TestCms {
 
 
         //api请求 GET方法
-        String interfaceName = "/live/getMliveThemeList/{userId}";
-        String ts = System.currentTimeMillis() + "";
-        String buff = interfaceName + "hsea" + "2345" + ts;
-        String token = Md5Util.MD5(buff);
-        //String url = "http://api.cms.lecloud.com/live/getMliveThemeList/" + 400001 + "?token=" + token + "&ts=" + ts;
-        String url = "http://localhost:83/live/getMliveThemeList/" + 400001 + "?token=" + token + "&ts=" + ts;
-        String result = HttpClientUtils.get(url);
-
-        System.out.println("result:" + result);
-
-
-        //String url = "http://localhost:83/live/getMliveThemeList/" + 22222 + "?token=" + token + "&ts=" + ts;
-
-
-        //api请求 POST方法
-//        String url = "http://localhost:83/live/modifyThemeState/" + 22222 + "/" + 2;
-//
-//        String interfaceName = "/live/modifyThemeState/{userId}/{themeType}";
+//        String interfaceName = "/live/getMliveThemeList/{userId}";
 //        String ts = System.currentTimeMillis() + "";
 //        String buff = interfaceName + "hsea" + "2345" + ts;
 //        String token = Md5Util.MD5(buff);
+//        String url = "http://api.cms.lecloud.com/live/getMliveThemeList/" + 857590 + "?token=" + token + "&ts=" + ts;
+//        //String url = "http://localhost:83/live/getMliveThemeList/" + 857590 + "?token=" + token + "&ts=" + ts;
+//        String result = HttpClientUtils.get(url);
 //
-//        Map<String, String> map = new HashMap<>();
-//        map.put("token", token);
-//        map.put("ts", ts);
-//
-//        String result = HttpClientUtils.post(url, map, "UTF-8");
 //        System.out.println("result:" + result);
+
+
+
+        //api请求 POST方法
+        String url = "http://localhost:83/live/deleteTheme";
+
+        String interfaceName = "/live/deleteTheme";
+        String ts = System.currentTimeMillis() + "";
+        String buff = interfaceName + "hsea" + "2345" + ts;
+        String token = Md5Util.MD5(buff);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        map.put("ts", ts);
+        map.put("id", "3");
+
+        String result = HttpClientUtils.post(url, map, "UTF-8");
+        System.out.println("result:" + result);
 
 
 //        String url = "http://localhost:811/channel/programa/content/create";
