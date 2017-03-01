@@ -16,8 +16,8 @@ public class TestCopyPage {
     public void test1() {
         String token = Md5Util.MD5("/frame/copyAllAppPage/" + 110);
 
-        String url = "http://api.m.cms.lecloud.com/frame/copyAllAppPage/110/1/" + token;
-        //String url = "http://localhost:822/frame/copyAllAppPage/110/1/" + token;
+        //String url = "http://api.m.cms.lecloud.com/frame/copyAllAppPage/800441/1/" + token;
+        String url = "http://localhost:90/frame/copyAllAppPage/110/1/" + token;
 
         Map<String, String> param = new HashMap<>();
 

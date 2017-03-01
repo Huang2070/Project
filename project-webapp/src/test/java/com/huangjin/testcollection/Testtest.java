@@ -1,4 +1,4 @@
-package com.huangjin.testgeneric;
+package com.huangjin.testcollection;
 
 import org.junit.Test;
 
