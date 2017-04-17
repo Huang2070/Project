@@ -14,7 +14,9 @@ public class TestEnum {
 //            System.out.println(item.getShareName());
 //        }
 
-        String str = "200";
-        System.out.println(str == "200");
+
+        for(ShareEnum e : ShareEnum.values()) {
+            System.out.println(e.name());
+        }
     }
 }

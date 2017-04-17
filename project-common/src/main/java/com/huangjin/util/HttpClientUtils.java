@@ -34,15 +34,59 @@ public class HttpClientUtils {
 
 //	private static final int TIMEOUT = 2000;
 
-	 private static final int TIMEOUT = 100000;
+	private static final int TIMEOUT = 10000;
 
 	public static String post(String weburl, Map<String, String> params,
 							  String encoding) {
-		return post(weburl, params, TIMEOUT, encoding);
+		return post(weburl, params, TIMEOUT, encoding, 0);
 	}
 
-	public static String post(String weburl, Map<String, String> params,
-							  int soTimeout, String encoding) {
+
+	public static String post(String url, String json, int timeout) {
+		logger.info("url=" + url + ",json=" + json);
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPost post = setHttpPostConfig(url, timeout);
+
+		CloseableHttpResponse response = null;
+		try {
+			post.setHeader("Content-Type", "application/json;charset=UTF-8");
+			post.setEntity(new StringEntity(json, "UTF-8"));
+			response = httpClient.execute(post);
+			HttpEntity entity = response.getEntity();
+			String result = EntityUtils.toString(entity);
+			EntityUtils.consume(entity);
+			int responseCode = response.getStatusLine().getStatusCode();
+			if(responseCode == 200){
+				return result;
+			}
+			logger.info("post code={},post result :{}" ,responseCode, result);
+		} catch (Exception e) {
+			logger.error("post is error {}", e);
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException e) {
+				logger.error("post is error {}", e);
+			}
+		}
+		return "";
+	}
+
+	private static HttpPost setHttpPostConfig(String url, int timeout) {
+		HttpPost post = new HttpPost(url);
+		RequestConfig config = RequestConfig.custom()
+				.setConnectionRequestTimeout(timeout)
+				.setConnectTimeout(timeout).setRedirectsEnabled(true)
+				.setSocketTimeout(timeout).build();
+		post.setConfig(config);
+		return post;
+	}
+
+
+
+	public static String post(String weburl, Map<String, String> params, int soTimeout, String encoding, Integer arg) {
 		logger.info("HttpClientUtils.post.URL={}", weburl);
 		// 创建默认的httpClient实例.
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -70,23 +114,7 @@ public class HttpClientUtils {
 			long start = System.currentTimeMillis();
 			CloseableHttpResponse response = httpClient.execute(httppost);
 			int status = response.getStatusLine().getStatusCode();
-			/*InputStream in = null;
-			try {
-				HttpEntity respEntity = response.getEntity();
-				if (respEntity != null) {
-					respEntity = new BufferedHttpEntity(respEntity);
 
-					in = respEntity.getContent();
-					result = IOUtils.toString(in, encoding);
-				}
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			} finally {
-				response.close();
-				if (in != null) {
-					in.close();
-				}
-			}*/
 			try {
 				HttpEntity entity = response.getEntity();
 				if (entity != null) {
@@ -95,11 +123,69 @@ public class HttpClientUtils {
 			}finally {
 				response.close();
 			}
-//			if (status != 200) {
-//				logger.warn("httpclient status error. url=" + weburl
-//						+ "  status=" + status);
-//				return null;
-//			}
+			if (status != 200) {
+				logger.warn("httpclient status error. url=" + weburl
+						+ "  status=" + status);
+				return null;
+			}
+			long cost = System.currentTimeMillis() - start;
+			logger.info("Cost:{},URL={}", cost, weburl);
+			return result;
+		}catch (Exception e) {
+			logger.error("http post error", e);
+			return null;
+		}finally{
+			try {
+				//关闭流并释放资源
+				httpClient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static String post(String weburl, Map<String, Object> params, int soTimeout, String encoding) {
+		logger.info("HttpClientUtils.post.URL={}", weburl);
+		// 创建默认的httpClient实例.
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		//设置http的状态参数
+		RequestConfig config = RequestConfig.custom()
+				.setSocketTimeout(soTimeout)
+				.setConnectTimeout(soTimeout)
+				.setConnectionRequestTimeout(soTimeout)
+				.build();
+		UrlEncodedFormEntity uefEntity;
+		try {
+			// 参数处理
+			List<NameValuePair> nvpsList = new ArrayList<NameValuePair>();
+			for (Map.Entry<String, Object> entry : params.entrySet()) {
+				NameValuePair nvp = new BasicNameValuePair(entry.getKey().toString(), entry.getValue().toString());
+				nvpsList.add(nvp);
+			}
+			uefEntity = new UrlEncodedFormEntity(nvpsList, encoding);
+			// 创建httppost
+			HttpPost httppost = new HttpPost(weburl);
+			httppost.setEntity(uefEntity);
+			httppost.setConfig(config);
+
+			String result = "";
+			long start = System.currentTimeMillis();
+			CloseableHttpResponse response = httpClient.execute(httppost);
+			int status = response.getStatusLine().getStatusCode();
+
+			try {
+				HttpEntity entity = response.getEntity();
+				if (entity != null) {
+					result = EntityUtils.toString(entity, encoding);
+				}
+			}finally {
+				response.close();
+			}
+			if (status != 200) {
+				logger.warn("httpclient status error. url=" + weburl
+						+ "  status=" + status);
+				return null;
+			}
 			long cost = System.currentTimeMillis() - start;
 			logger.info("Cost:{},URL={}", cost, weburl);
 			return result;
@@ -287,4 +373,6 @@ public class HttpClientUtils {
 
 
 }
+
+
 

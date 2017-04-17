@@ -1,6 +1,8 @@
 package com.huangjin.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.huangjin.domain.User;
+import com.huangjin.vo.ActivityVO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,5 +127,16 @@ public class ViewController {
             }
         }
     }
+
+    @RequestMapping(value="testRequest")
+    public void testRequest(HttpServletRequest request, HttpServletResponse response, ActivityVO activityVO) {
+        try {
+            request.setAttribute("activity", activityVO);
+            request.getRequestDispatcher("/WEB-INF/jsp/zhuanpan.jsp").forward(request, response);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

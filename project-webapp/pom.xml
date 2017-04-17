@@ -130,6 +130,11 @@
             <artifactId>activemq-all</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
 
     </dependencies>
 
