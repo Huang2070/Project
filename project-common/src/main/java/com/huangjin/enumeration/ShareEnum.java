@@ -25,6 +25,7 @@ public enum ShareEnum {
     private String shareId;
     private String shareName;
     private String shareLink;
+
     private ShareEnum(String shareId, String shareName, String shareLink){
         this.shareId = shareId;
         this.shareName = shareName;

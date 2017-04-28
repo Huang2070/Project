@@ -31,10 +31,10 @@ public class TestCopyPage {
 
     @Test
     public void test2() {
-        String token = Md5Util.MD5("/levalley/getFrameInfo/" + 400097);
+        String token = Md5Util.MD5("/levalley/getFrameInfo/" + 400225);
 
-        //String url = "http://api.m.cms.lecloud.com/levalley/getFrameInfo/" + 400097 + "/" + token;
-        String url = "http://localhost:90/levalley/getFrameInfo/" + 400097 + "/" + token;
+        String url = "http://api.m.cms.lecloud.com/levalley/getFrameInfo/" + 400225 + "/" + token;
+        //String url = "http://localhost:90/levalley/getFrameInfo/" + 400097 + "/" + token;
 
         Map<String, String> param = new HashMap<>();
 

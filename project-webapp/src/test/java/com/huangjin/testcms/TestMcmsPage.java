@@ -26,11 +26,11 @@ public class TestMcmsPage {
     //内容
     @Test
     public void test1() {
-        String userId = "864650";
+        String userId = "400004";
         String interfaceName = "/mcms/api/page/token/userid/%s";
         String token = Md5Util.MD5(String.format(interfaceName, userId));
 
-        String url = "http://api.m.cms.lecloud.com/page/getDataByPage/" + userId + "/1168/1/20/" + token;
+        String url = "http://api.m.cms.lecloud.com/page/getDataByPage/" + userId + "/2133/1/20/" + token;
         //String url = "http://localhost:90/page/getDataByPage/" + userId + "/28877/1/10/" + token;
         String result = HttpClientUtils.get(url);
 

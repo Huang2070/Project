@@ -17,6 +17,8 @@ public class TestEnum {
 
         for(ShareEnum e : ShareEnum.values()) {
             System.out.println(e.name());
+
+            System.out.println(e.getShareName());
         }
     }
 }
