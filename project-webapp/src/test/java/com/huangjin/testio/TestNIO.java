@@ -1,5 +1,6 @@
 package com.huangjin.testio;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import org.junit.Test;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +22,6 @@ import java.util.Set;
  * Created by huang on 2016-11-22.
  */
 public class TestNIO {
-    public static void main(String[] args) {
-
-    }
 
     @Test
     public void testBuffer() {
@@ -62,7 +60,7 @@ public class TestNIO {
     }
 
     @Test
-    public void testChannel() {
+    public void testChannel1() {
         try {
             RandomAccessFile aFile = new RandomAccessFile("C:\\Users\\huang\\Desktop\\aaa.txt", "rw");
             FileChannel inChannel = aFile.getChannel();
@@ -86,7 +84,31 @@ public class TestNIO {
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+    }
 
+    @Test
+    public void testChannel() {
+        try {
+            RandomAccessFile aFile = new RandomAccessFile("C:\\Users\\huang\\Desktop\\aaa.txt", "rw");
+
+            FileChannel channel = aFile.getChannel();
+
+            //ByteBuffer buffer = ByteBuffer.allocate(10);
+            CharBuffer buffer = CharBuffer.allocate(10);
+
+            buffer.put("中过人");
+            //int bufferSize = channel.read(buffer);
+
+            buffer.flip();
+
+            while(buffer.hasRemaining()) {
+                System.out.print(buffer.get());
+            }
+            buffer.clear();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 
@@ -136,6 +158,36 @@ public class TestNIO {
                 keyIterator.remove();
             }
         }
+    }
+
+    @Test
+    public void testScatter() throws Exception {
+        ByteBuffer header = ByteBuffer.allocate(10);
+        ByteBuffer body = ByteBuffer.allocate(100);
+
+        ByteBuffer[] bufferArray = {header, body};
+
+        RandomAccessFile aFile = new RandomAccessFile("C:\\Users\\huang\\Desktop\\aaa.txt", "rw");
+
+        FileChannel channel = aFile.getChannel();
+
+        channel.read(bufferArray);
+
+        header.flip();
+        body.flip();
+
+        while(header.hasRemaining()) {
+            //System.out.print((char)header.get());
+            channel.write(header);
+        }
+
+        System.out.println("\n");
+        while(body.hasRemaining()) {
+            //System.out.print((char)body.get());
+            channel.write(body);
+        }
+
+
     }
 
 }

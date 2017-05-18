@@ -2,15 +2,13 @@ package com.huangjin.testcms;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.asm.Type;
 import com.huangjin.util.HttpClientUtils;
-import com.huangjin.util.Md5Util;
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by huang on 2016-9-5.
