@@ -1,11 +1,9 @@
 package com.huangjin.testio;
 
+import org.apache.activemq.protobuf.BufferInputStream;
 import org.junit.Test;
 
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * Created by huang on 2016-11-8.
@@ -31,6 +29,24 @@ public class TestTest {
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void TestInputStream() throws Exception {
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream("C:\\Users\\huang\\Desktop\\sdf.txt"));
+
+        byte[] bytes = new byte[10];
+        int bytesReads = in.read(bytes);
+
+        while(bytesReads != -1) {
+            for(byte b : bytes) {
+                System.out.print((char)b);
+
+            }
+            bytesReads = in.read(bytes);
+        }
+        in.close();
     }
 
     @Test

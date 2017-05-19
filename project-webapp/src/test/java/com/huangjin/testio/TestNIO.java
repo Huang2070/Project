@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -69,16 +70,23 @@ public class TestNIO {
 
             int bytesRead = inChannel.read(buf);
             while (bytesRead != -1) {
-
-                System.out.println("Read " + bytesRead);
                 buf.flip();
 
                 while(buf.hasRemaining()){
                     System.out.print((char) buf.get());
                 }
 
-                buf.clear();
+                buf.clear(); //如果不clear，则buf一直是满的，写不进去东西，造成channel里面东西读不出来
                 bytesRead = inChannel.read(buf);
+            }
+
+            //buf.flip();
+            buf.put((byte)83);
+            buf.put((byte)85);
+
+            System.out.println("\n");
+            while(buf.hasRemaining()){
+                System.out.print((char) buf.get());
             }
             aFile.close();
         } catch(Exception e) {
@@ -133,7 +141,7 @@ public class TestNIO {
     }
 
     @Test
-    public void testSelector() throws Exception {
+    public void testSelector1() throws Exception {
         Selector selector = Selector.open();
         SocketChannel channel = SocketChannel.open();
         channel.configureBlocking(false);
@@ -141,7 +149,9 @@ public class TestNIO {
 
         while(true) {
             int readyChannels = selector.select();
-            if(readyChannels == 0) continue;
+            if(readyChannels == 0)
+                continue;
+
             Set selectedKeys = selector.selectedKeys();
             Iterator keyIterator = selectedKeys.iterator();
             while(keyIterator.hasNext()) {
@@ -158,6 +168,11 @@ public class TestNIO {
                 keyIterator.remove();
             }
         }
+    }
+
+    @Test
+    public void testSelector() {
+
     }
 
     @Test
@@ -186,8 +201,27 @@ public class TestNIO {
             //System.out.print((char)body.get());
             channel.write(body);
         }
+        int [][] array = null;
+    }
 
 
+    @Test
+    public void testSocketChannel() throws Exception {
+        SocketChannel socketChannel = SocketChannel.open();
+        socketChannel.connect(new InetSocketAddress("www.baidu.com", 80));
+        socketChannel.configureBlocking(false);
+
+        ByteBuffer buffer = ByteBuffer.allocate(100);
+        int bytesRead = socketChannel.read(buffer);
+
+        buffer.flip();
+
+        while(buffer.hasRemaining()) {
+            System.out.println(bytesRead);
+            System.out.println((char)buffer.get());
+        }
+
+        socketChannel.close();
     }
 
 }
