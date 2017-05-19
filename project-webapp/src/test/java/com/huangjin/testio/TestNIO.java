@@ -68,23 +68,19 @@ public class TestNIO {
 
             ByteBuffer buf = ByteBuffer.allocate(48);
 
-            int bytesRead = inChannel.read(buf);
-            while (bytesRead != -1) {
-                buf.flip();
+            inChannel.read(buf);
 
-                while(buf.hasRemaining()){
-                    System.out.print((char) buf.get());
-                }
-
-                buf.clear(); //如果不clear，则buf一直是满的，写不进去东西，造成channel里面东西读不出来
-                bytesRead = inChannel.read(buf);
+            buf.flip();
+            while(buf.hasRemaining()){
+                System.out.print((char) buf.get());
             }
 
-            //buf.flip();
+            buf.compact();
             buf.put((byte)83);
             buf.put((byte)85);
 
             System.out.println("\n");
+            buf.flip();
             while(buf.hasRemaining()){
                 System.out.print((char) buf.get());
             }
