@@ -68,11 +68,23 @@ public class TestNIO {
 
             ByteBuffer buf = ByteBuffer.allocate(48);
 
-            inChannel.read(buf);
+//            int byteRead = 0;
+//
+//            while(byteRead != -1) {
+//                byteRead = inChannel.read(buf);
+//
+//                buf.flip();
+//                while(buf.hasRemaining()){
+//                    System.out.print((char) buf.get());
+//                }
+//
+//                buf.clear();
+//            }
 
+            inChannel.read(buf);
             buf.flip();
-            while(buf.hasRemaining()){
-                System.out.print((char) buf.get());
+            for(int i = 0; i < 10; i++) {
+                System.out.print((char)buf.get());
             }
 
             buf.compact();
@@ -86,31 +98,6 @@ public class TestNIO {
             }
             aFile.close();
         } catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    @Test
-    public void testChannel() {
-        try {
-            RandomAccessFile aFile = new RandomAccessFile("C:\\Users\\huang\\Desktop\\aaa.txt", "rw");
-
-            FileChannel channel = aFile.getChannel();
-
-            //ByteBuffer buffer = ByteBuffer.allocate(10);
-            CharBuffer buffer = CharBuffer.allocate(10);
-
-            buffer.put("中过人");
-            //int bufferSize = channel.read(buffer);
-
-            buffer.flip();
-
-            while(buffer.hasRemaining()) {
-                System.out.print(buffer.get());
-            }
-            buffer.clear();
-
-        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -166,10 +153,6 @@ public class TestNIO {
         }
     }
 
-    @Test
-    public void testSelector() {
-
-    }
 
     @Test
     public void testScatter() throws Exception {
@@ -205,7 +188,8 @@ public class TestNIO {
     public void testSocketChannel() throws Exception {
         SocketChannel socketChannel = SocketChannel.open();
         socketChannel.connect(new InetSocketAddress("www.baidu.com", 80));
-        socketChannel.configureBlocking(false);
+
+        socketChannel.configureBlocking(false); //配置非阻塞
 
         ByteBuffer buffer = ByteBuffer.allocate(100);
         int bytesRead = socketChannel.read(buffer);

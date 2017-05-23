@@ -4,12 +4,33 @@ import org.apache.activemq.protobuf.BufferInputStream;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Scanner;
 
 /**
  * Created by huang on 2016-11-8.
  */
 public class TestTest {
     public static void main(String[] args) {
+        try {
+            BufferedInputStream in = new BufferedInputStream(System.in);
+
+            byte[] bytes = new byte[10];
+            int bytesReads = in.read(bytes);
+
+            while(bytesReads != -1) {
+                String str = new String(bytes);
+                if(str.substring(0, 4).equals("exit")) {
+                    System.exit(0);
+                } else {
+                    System.out.println(str.substring(0, bytesReads));
+                }
+
+                bytesReads = in.read(bytes);
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -32,22 +53,6 @@ public class TestTest {
     }
 
 
-    @Test
-    public void TestInputStream() throws Exception {
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream("C:\\Users\\huang\\Desktop\\sdf.txt"));
-
-        byte[] bytes = new byte[10];
-        int bytesReads = in.read(bytes);
-
-        while(bytesReads != -1) {
-            for(byte b : bytes) {
-                System.out.print((char)b);
-
-            }
-            bytesReads = in.read(bytes);
-        }
-        in.close();
-    }
 
     @Test
     public void testFilter() {
@@ -62,5 +67,8 @@ public class TestTest {
             e.printStackTrace();
         }
     }
+
+
+
 
 }
