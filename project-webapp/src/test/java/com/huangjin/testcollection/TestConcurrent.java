@@ -38,13 +38,19 @@ public class TestConcurrent {
 //        System.out.println(map);
 
 
-        String[] aa = "aaa|bbb|ccc".split("|");
+        String[] aa = "aaa,bbb,ccc".split(",");
 
-        //String[] aa = "aaa|bbb|ccc".split("\\|"); 这样才能得到正确的结果
+        String[] a = "aaa|bbb|ccc".split("|"); //这样才能得到正确的结果
 
         for (int i = 0 ; i <aa.length ; i++ ) {
 
             System.out.println(aa[i]);
+
+        }
+
+        for (int i = 0 ; i <a.length ; i++ ) {
+
+            System.out.println(a[i]);
 
         }
     }
