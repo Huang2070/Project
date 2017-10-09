@@ -39,5 +39,10 @@
 
     <mvc:annotation-driven />
 
+    <!-- 上传文件配置 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="30000000" />
+    </bean>
+
 
 </beans>

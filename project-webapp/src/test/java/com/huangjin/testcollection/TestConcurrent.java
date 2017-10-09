@@ -1,8 +1,8 @@
 package com.huangjin.testcollection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,44 +10,48 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TestConcurrent {
 
-    private static ConcurrentHashMap<Integer, Integer> cmap = new ConcurrentHashMap<>();
-
-    private static HashMap<Integer, Integer> map = new HashMap<>();
-
-    public static void main(String[] args) {
-
-    }
-
+    private static ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
 
     @Test
-    public void test() throws Exception {
+    public void test() {
+//
+//        new Thread("Thread1"){
+//            @Override
+//            public void run() {
+//                map.put(3, 33);
+//            }
+//        }.run();
+//
+//        new Thread("Thread2"){
+//            @Override
+//            public void run() {
+//                map.put(4, 44);
+//            }
+//        }.run();
+//
+//        new Thread("Thread3"){
+//            @Override
+//            public void run() {
+//                map.put(7, 77);
+//            }
+//        }.run();
+//        System.out.println(map);
 
-        ConcurrentHashMap<String, Boolean> map = new ConcurrentHashMap<>();
 
-        Thread a = new Thread() {
-            public void run() {
-                map.put("first", true);
-                map.put("second", true);
-            }
-        };
+        String[] aa = "aaa,bbb,ccc".split(",");
 
-        Thread b = new Thread() {
-            public void run() {
-                map.clear();
-            }
-        };
+        String[] a = "aaa|bbb|ccc".split("|"); //这样才能得到正确的结果
 
-        a.start();
-        System.out.println(map);
+        for (int i = 0 ; i <aa.length ; i++ ) {
 
-        b.start();
-        System.out.println(map);
+            System.out.println(aa[i]);
 
-        a.join();
-        System.out.println(map);
+        }
 
-        b.join();
-        System.out.println(map);
+        for (int i = 0 ; i <a.length ; i++ ) {
 
+            System.out.println(a[i]);
+
+        }
     }
 }

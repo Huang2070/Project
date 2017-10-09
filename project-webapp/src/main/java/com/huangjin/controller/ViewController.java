@@ -60,7 +60,7 @@ public class ViewController {
     //重定向
     @RequestMapping(value="/getView5")
     public String testView5() {
-        return "redirect:/view/getView2";
+        return "redirect: http://www.baidu.com";
     }
 
     //直接在Controller的方法中传入PrintWriter对象
