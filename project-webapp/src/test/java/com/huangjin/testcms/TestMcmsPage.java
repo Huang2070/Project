@@ -12,7 +12,7 @@ public class TestMcmsPage {
     //框架
     @Test
     public void test() {
-        String userId = "864650";
+        String userId = "864322";
         String interfaceName = "/frame/getCmptInfo/%s/LECOpenConfig";
         String token = Md5Util.MD5(String.format(interfaceName, userId));
 
@@ -26,12 +26,12 @@ public class TestMcmsPage {
     //内容
     @Test
     public void test1() {
-        String userId = "400717";
+        String userId = "847695";
         String interfaceName = "/mcms/api/page/token/userid/%s";
         String token = Md5Util.MD5(String.format(interfaceName, userId));
 
-        //String url = "http://api.m.cms.lecloud.com/page/getDataByPage/" + userId + "/2133/1/20/" + token;
-        String url = "http://localhost:90/page/getDataByPage/" + userId + "/23939/1/10/" + token;
+        String url = "http://api.m.cms.lecloud.com/page/getDataByPage/" + userId + "/4232/1/20/" + token;
+        //String url = "http://localhost:90/page/getDataByPage/" + userId + "/1174/1/10/" + token;
         String result = HttpClientUtils.get(url);
 
         System.out.println("result:" + result);

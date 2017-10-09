@@ -20,12 +20,8 @@ public class Testtest {
 
         liter.next();
         liter.add("1");
-        System.out.println(liter.next());
-
 
         liter.add("2");
-
-        System.out.println(liter.next());
 
         Iterator iter = linkedList.iterator();
         while(iter.hasNext()) {

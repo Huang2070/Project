@@ -1,9 +1,10 @@
 package com.huangjin.serviceImpl;
 
-import com.huangjin.dao.UserMapper;
 import com.huangjin.domain.User;
+import com.huangjin.dao.UserMapper;
 import com.huangjin.service.UserService;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

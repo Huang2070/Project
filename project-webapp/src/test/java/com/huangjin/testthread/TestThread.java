@@ -1,7 +1,5 @@
 package com.huangjin.testthread;
 
-import org.junit.Test;
-
 import java.util.concurrent.locks.ReentrantLock;
 
 

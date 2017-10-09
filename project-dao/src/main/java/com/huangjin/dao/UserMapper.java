@@ -1,7 +1,9 @@
 package com.huangjin.dao;
 
 import com.huangjin.domain.User;
+
 import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
