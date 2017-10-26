@@ -1,7 +1,7 @@
 package com.huangjin.testcms;
 
-import com.huangjin.util.HttpClientUtils;
 import com.huangjin.util.Md5Util;
+import com.huangjin.util.HttpClientUtils;
 import org.junit.Test;
 
 import java.util.HashMap;

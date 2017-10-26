@@ -2,8 +2,6 @@ package com.huangjin.testjava;
 
 import com.huangjin.enumeration.ShareEnum;
 
-import java.util.EnumSet;
-
 /**
  * Created by huang on 2016-9-28.
  */

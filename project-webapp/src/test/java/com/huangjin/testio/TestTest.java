@@ -1,10 +1,8 @@
 package com.huangjin.testio;
 
-import org.apache.activemq.protobuf.BufferInputStream;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.Scanner;
 
 /**
  * Created by huang on 2016-11-8.

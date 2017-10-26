@@ -1,13 +1,7 @@
 package com.huangjin.testjava;
 
-import com.huangjin.dao.UserMapper;
-import com.huangjin.domain.User;
-import org.easymock.EasyMock;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by huang on 2016-9-28.

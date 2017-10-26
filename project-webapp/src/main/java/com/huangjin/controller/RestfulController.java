@@ -53,6 +53,11 @@ public class RestfulController {
         return "test1";
     }
 
+    @RequestMapping(value="/testInt")
+    public void testInt(int i) {
+        System.out.println(i);
+    }
+
 
 
 }

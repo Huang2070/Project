@@ -1,6 +1,5 @@
 package com.huangjin.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.huangjin.domain.User;
 import com.huangjin.vo.ActivityVO;
 import org.apache.commons.logging.Log;
@@ -14,9 +13,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

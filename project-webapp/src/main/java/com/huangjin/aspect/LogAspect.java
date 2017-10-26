@@ -14,12 +14,15 @@ import org.springframework.stereotype.Component;
 public class LogAspect {
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    public LogAspect() {
-    }
+    private static Integer num = 0;
+
+    public LogAspect() {}
 
     @Pointcut("execution(public * com.huangjin.controller..*.*(..))")
-    public void logPoint() {
-    }
+    public void logPoint() {}
+
+    @Pointcut("execution(public * com.huangjin.controller.RestfulController.testString(..))")
+    public void numPoint() {}
 
     @Before("logPoint()")
     public void beforeMethod(JoinPoint call) {
@@ -31,5 +34,11 @@ public class LogAspect {
     @AfterReturning("logPoint()")
     public void afterReturningMethod() {
         logger.info("方法结束");
+    }
+
+    @Before("numPoint()")
+    public void countNum() {
+        num++;
+        logger.info("访问次数：" + num);
     }
 }
