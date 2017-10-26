@@ -15,7 +15,7 @@ import java.util.Date;
 
 public class TestClass {
     @Test
-    public void tset() throws Exception {
+    public void test() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         System.out.println(sdf.format(Long.parseLong("1493888196000")));
@@ -29,6 +29,12 @@ public class TestClass {
 
         System.out.println(res);
         
+    }
+
+    @Test
+    public void intParse() {
+        boolean result = Integer.parseInt("1") == 1;
+        System.out.println(result);
     }
 
     private String dateToStamp(String s) throws ParseException {
