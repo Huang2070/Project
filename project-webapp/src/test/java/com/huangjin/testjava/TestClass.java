@@ -39,6 +39,12 @@ public class TestClass {
         
     }
 
+    @Test
+    public void intParse() {
+        boolean result = Integer.parseInt("1") == 1;
+        System.out.println(result);
+    }
+
     private String dateToStamp(String s) throws ParseException {
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
