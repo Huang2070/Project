@@ -13,11 +13,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by huang on 2016-8-25.
  */
-public class TestCollection {
+public class TestException {
 
     public static void main(String[] args) throws RuntimeException {
         try {
-
             System.out.println(1);
             throw new RuntimeException();
         } catch(Exception e) {

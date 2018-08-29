@@ -1,30 +1,58 @@
 package com.huangjin.testjava;
 
 
+import com.huangjin.util.HttpUtil;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+
 /**
  * Created by huang on 2017-6-21.
  */
 public class TestJava {
     public static void main(String[] args) {
-        System.out.println(sortType(null));
+        getImgFile("http://nos.netease.com/haitao/ac02d6a5d78e43d5ae8bf9f76e9664171416220031422i2lou9bh10005.jpg");
     }
 
 
-    private static String sortType(Integer sort) {
-        if(sort != null) {
-            switch (sort) {
-                case 0:
-                    return "00"; //更新时间
-                case 1:
-                    return "11"; //权重降序
-                case 2:
-                    return "22"; //权重升序
-                default:
-                    return "00";
-            }
-        } else {
-            return "00";
-        }
+    public static File getImgFile(String url)  {
+        HttpURLConnection conn = null;
+        File file = null;
+        try {
+            conn = HttpUtil.getURLConnection(url);
 
+            // 连接失败，或连接存在异常
+            if ((conn == null) || (conn.getResponseCode() != HttpURLConnection.HTTP_OK)) {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+                return null;
+            }
+
+            byte[] buffer = new byte[1024];
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            int len = 0;
+
+            InputStream is = conn.getInputStream();
+            while (true) {
+                len = is.read(buffer, 0, buffer.length);
+                if (len == -1) {
+                    break;
+                }
+                bos.write(buffer, 0, len);
+            }
+            OutputStream outputStream = new FileOutputStream("C:\\Users\\huang\\Desktop\\ddd.jpg");
+            bos.writeTo(outputStream);
+
+            bos.close();
+            conn.disconnect();
+
+        } catch (Exception e) {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+        return file;
     }
 }

@@ -2,6 +2,7 @@ package com.huangjin.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -41,5 +42,34 @@ public class TimeUtil {
         Date date = new Date(lt);
         res = simpleDateFormat.format(date);
         return res;
+    }
+
+
+    public static Date getToday() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 0);
+        return cal.getTime();
+    }
+
+    public static Date getYesterDay() {
+        return dateAddDays(new Date(), -1);
+    }
+
+    public static Date getBeforeYesterDay() {
+        return dateAddDays(new Date(), -2);
+    }
+
+    public static Date dateAddDays(Date date, int addDays) {
+
+        Date newDate = null;
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.DATE, addDays);
+            newDate = cal.getTime();
+        } catch (Exception e) {
+            return null;
+        }
+        return newDate;
     }
 }

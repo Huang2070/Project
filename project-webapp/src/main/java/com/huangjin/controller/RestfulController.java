@@ -49,7 +49,7 @@ public class RestfulController {
     }
 
     @RequestMapping(value="/testString")
-    public String testString(HttpServletRequest request, HttpServletResponse response) {
+    public String testString(String str1, String str2) {
         return "test1";
     }
 

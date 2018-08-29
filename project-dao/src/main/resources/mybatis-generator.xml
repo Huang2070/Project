@@ -25,7 +25,8 @@
 
         <!-- commentGenerator 去除自动生成的注释  true:去除 false:不去除-->
         <commentGenerator>
-            <property name="suppressDate" value="false"/>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
@@ -65,11 +66,16 @@
         </javaClientGenerator>
 
         <!-- tableName:用于自动生成代码的数据库表；domainObjectName:对应于数据库表的javaBean类名,这里避免生成example类 -->
-        <table schema="world" tableName="city"
+        <table schema="world" tableName="tb_t_sku_property_edit"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false"
-               selectByExampleQueryId="false" ></table>
+               selectByExampleQueryId="false">
+
+            <!--<ignoreColumn column="db_create_time"/>-->
+            <!--<ignoreColumn column="db_update_time"/>-->
+
+        </table>
     </context>
 </generatorConfiguration>
