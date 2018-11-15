@@ -1,9 +1,5 @@
 package com.huangjin.testjava;
 
-
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"classpath:spring/*"})
-
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -11,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TestClass {
+
     @Test
     public void test() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
