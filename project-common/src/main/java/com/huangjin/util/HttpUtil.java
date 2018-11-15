@@ -1,10 +1,14 @@
 package com.huangjin.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.remoting.RemoteInvocationFailureException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -13,6 +17,10 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 public class HttpUtil {
+
+	public static final int DEFAULT_CONNECT_TIME_OUT = 45000;
+
+	public static final int DEFAULT_READ_TIME_OUT = 45000;
 	
 	/**
 	 * GET请求
@@ -347,6 +355,38 @@ public class HttpUtil {
 				java.security.cert.X509Certificate[] certs, String authType)
 				throws java.security.cert.CertificateException {
 			return;
+		}
+	}
+
+
+	public static HttpURLConnection getURLConnection(String url) {
+
+		return getURLConnection(url, DEFAULT_CONNECT_TIME_OUT, DEFAULT_READ_TIME_OUT);
+	}
+
+	private static HttpURLConnection getURLConnection(String urlStr, int connectTimeout, int readTimeout) throws RemoteInvocationFailureException {
+
+		if (StringUtils.isBlank(urlStr)) {
+			return null;
+		}
+		HttpURLConnection httpConn = null;
+		// logger.debug("请求URL:" + urlStr);
+		try {
+			URL remoteUrl = new URL(urlStr);
+			httpConn = (HttpURLConnection) remoteUrl.openConnection();
+			httpConn.setConnectTimeout(connectTimeout);
+			httpConn.setReadTimeout(readTimeout);
+			return httpConn;
+		} catch (MalformedURLException e) {
+			// logger.error("", e);
+			throw new RemoteInvocationFailureException("远程访问异常[" + urlStr + "]", e);
+		} catch (IOException e) {
+			// logger.error("", e);
+			throw new RemoteInvocationFailureException("网络IO异常[" + urlStr + "]", e);
+		} finally {
+			if (httpConn != null) {
+				httpConn.disconnect();
+			}
 		}
 	}
 
