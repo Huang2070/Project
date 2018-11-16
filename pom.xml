@@ -18,6 +18,7 @@
 
     <properties>
         <spring.version>4.1.6.RELEASE</spring.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -275,6 +276,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <encoding>utf8</encoding>
                 </configuration>
             </plugin>
 

@@ -1,5 +1,6 @@
 package com.huangjin.testio;
 
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -8,14 +9,19 @@ import com.huangjin.domain.Aaa;
 import com.huangjin.domain.User;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -186,7 +192,7 @@ public class TestTest {
 
 
         Document doc = Jsoup.parse(html);
-        Elements videoElements = doc.select("video");
+        Elements videoElements = doc.select("image").remove();
         for(Element element : videoElements) {
             String src = element.attr("src");
             System.out.println(src);
@@ -246,5 +252,286 @@ public class TestTest {
         map.put(1L, "1");
         String result = (String)map.get(2L);
         System.out.println(result);
+    }
+
+    @Test
+    public void test17() {
+        try {
+            String filePath = this.getClass().getResource("/offshelf.txt").getPath();
+            List<String> lines = this.readFile(filePath);
+            for(String str : lines) {
+                System.out.println(str);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @Test
+    public void test18() {
+        String filePath = this.getClass().getResource("/").getPath();
+        System.out.println(filePath);
+    }
+
+    @Test
+    public void test19() {
+        PrintStream psError = null;
+        PrintStream psInfo = null;
+
+        try {
+            String sourcesPath = this.getClass().getResource("/").getPath();
+
+            FileOutputStream fosError = new FileOutputStream(sourcesPath + "errorLog.log", true); //错误日志文件
+            FileOutputStream fosInfo = new FileOutputStream(sourcesPath + "runLog.log", true); //日志文件
+
+            psError = new PrintStream(fosError);
+            psInfo = new PrintStream(fosInfo);
+
+            psError.println("123");
+            psInfo.println("123");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            psError.close();
+            psInfo.close();
+        }
+    }
+
+    @Test
+    public void test20() {
+        User use = new User();
+        System.out.println(use.getId() == 0);
+    }
+
+    @Test
+    public void test21() {
+        List<Integer> list1 = Lists.newArrayList(1,2,3,4,5);
+
+        List<Integer> list2 = Lists.newArrayList(1,2,3,4,5);
+
+        list1.removeAll(list2);
+
+        System.out.println(list1);
+        System.out.println(list2);
+    }
+
+    @Test
+    public void test22() {
+        List<User> users = Lists.newArrayList();
+        User user1 = new User("1", "2");
+        User user2 = new User("3", "4");
+        users.add(user1);
+        users.add(user2);
+
+        Map<String, User> userMap = Maps.uniqueIndex(users, new Function<User, String>() {
+            @Override
+            public String apply(User user) {
+                return user.getUsername();
+            }
+        });
+
+        for(Map.Entry<String, User> entry : userMap.entrySet()) {
+            System.out.println(entry.getKey());
+        }
+    }
+
+    @Test
+    public void test23() {
+        String a = "1";
+        String b = "2";
+        Set<String> aaa = Sets.newHashSet();
+        System.out.println(aaa.add(a));
+        System.out.println(aaa.add(b));
+        System.out.println(aaa.add(a));
+    }
+
+    @Test
+    public void test24() {
+        long timeMills = System.currentTimeMillis();
+        System.out.println(String.valueOf(timeMills) + RandomUtils.nextInt(1, 1000));
+        System.out.println(RandomUtils.nextInt(1, 1000));
+
+    }
+
+    @Test
+    public void test25() {
+        String s1 = new String("aaa");
+        String s2 = "aaa";
+        System.out.println(s1 == s2);    // false
+
+        s1 = new String("bbb").intern();
+        s2 = "bbb";
+        System.out.println(s1 == s2);    // true
+
+        s1 = "ccc";
+        s2 = "ccc";
+        System.out.println(s1 == s2);    // true
+
+        s1 = new String("ddd").intern();
+        s2 = new String("ddd").intern();
+        System.out.println(s1 == s2);    // true
+
+        s1 = "ab" + "cd";
+        s2 = "abcd";
+        System.out.println(s1 == s2);    // true
+
+        String temp = "hh";
+        s1 = "a" + temp;
+        // 如果调用s1.intern 则最终返回true
+        s2 = "ahh";
+        System.out.println(s1 == s2);    // false
+
+        temp = "hh".intern();
+        s1 = "a" + temp;
+        s2 = "ahh";
+        System.out.println(s1 == s2);    // false
+
+        temp = "hh".intern();
+        s1 = ("a" + temp).intern();
+        s2 = "ahh";
+        System.out.println(s1 == s2);    // true
+
+        s1 = new String("1");    // 同时会生成堆中的对象 以及常量池中1的对象，但是此时s1是指向堆中的对象的
+        s1.intern();            // 常量池中的已经存在
+        s2 = "1";
+        System.out.println(s1 == s2);    // false
+
+        String s3 = new String("1") + new String("1");    // 此时生成了四个对象 常量池中的"1" + 2个堆中的"1" + s3指向的堆中的对象（注此时常量池不会生成"11"）
+        s3.intern();    // jdk1.7之后，常量池不仅仅可以存储对象，还可以存储对象的引用，会直接将s3的地址存储在常量池
+        String s4 = "11";    // jdk1.7之后，常量池中的地址其实就是s3的地址
+        System.out.println(s3 == s4); // jdk1.7之前false， jdk1.7之后true
+
+        s3 = new String("2") + new String("2");
+        s4 = "22";        // 常量池中不存在22，所以会新开辟一个存储22对象的常量池地址
+        s3.intern();    // 常量池22的地址和s3的地址不同
+        System.out.println(s3 == s4); // false
+
+        // 对于什么时候会在常量池存储字符串对象，我想我们可以基本得出结论: 1. 显示调用String的intern方法的时候; 2. 直接声明字符串字面常量的时候，例如: String a = "aaa";
+        // 3. 字符串直接常量相加的时候，例如: String c = "aa" + "bb";  其中的aa/bb只要有任何一个不是字符串字面常量形式，都不会在常量池生成"aabb". 且此时jvm做了优化，不会同时生成"aa"和"bb"在字符串常量池中
+    }
+
+    @Test
+    public void test26() {
+        String str = "huangjin111";
+        for (int i = str.length(); --i>=0;){
+            if (!Character.isDigit(str.charAt(i))){
+                System.out.println(false);
+            }
+        }
+    }
+
+    @Test
+    public void test27() {
+        Set<Integer> sets = Sets.newHashSet(1,2,3,4,5,6,7,8,9,0);
+
+        List<List<Integer>> list = Lists.partition(Lists.newArrayList(sets), 10);
+
+        System.out.println(list);
+
+    }
+
+
+    @Test
+    public void test28() {
+        List<User> users = Lists.newArrayList();
+        User user1 = new User("huangjin", "1");
+        User user2 = new User("huangjin", "2");
+        User user3 = new User("huangjin", "3");
+        User user4 = new User("lmf", "4");
+        User user5 = new User("lmf", "5");
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+        users.add(user4);
+        users.add(user5);
+
+        for(User user : users) {
+            user.setUsername("hehe");
+        }
+
+        for(User user : users) {
+            System.out.println(user.toString());
+        }
+    }
+
+    @Test
+    public void test29() {
+        Map<String, Integer> map = Maps.newHashMap();
+        map.put("1-1", 1);
+        map.put("1-2", 1);
+        map.put("2-1", 2);
+        map.put("3-1", 3);
+
+        List<Integer> list = Lists.newArrayList(map.values());
+        Set<Integer> set = Sets.newHashSet(map.values());
+        System.out.println(list);
+        System.out.println(set);
+    }
+
+
+    @Test
+    public void test31() {
+        Object ddd = 2018435.0;
+
+        System.out.println(Math.round(Double.parseDouble(ddd.toString())));
+    }
+
+    @Test
+    public void test33() {
+        String url = "/inperoid/query/**";
+        String matchUrl = "/inperoid/query/";
+
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        System.out.println(pathMatcher.match(url, matchUrl));
+    }
+
+    @Test
+    public void test35() {
+        int threads = Math.min(Runtime.getRuntime().availableProcessors() * 2, 10);
+        System.out.println(Runtime.getRuntime().availableProcessors());
+        System.out.println(threads);
+    }
+
+    @Test
+    public void test37() throws IOException {
+        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\bbb.sql");
+        FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\ddd.sql", true);
+        BufferedWriter bw = new BufferedWriter(fw);
+        for(String str : list) {
+            String goodsId = str.substring(0, str.indexOf("\t"));
+            String title = str.substring(str.indexOf("\t") + 1);
+
+            String udpateSql = "update tb_goods_label_edit set invoice_title = '" + title + "' where edit_goods_id = " + goodsId + ";";
+            bw.write(udpateSql);
+            bw.newLine();
+        }
+
+        bw.close();
+        fw.close();
+    }
+
+
+    /**
+     * 逐行读取文件
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    private static List<String> readFile(String path) throws IOException {
+        List<String> list = Lists.newArrayList();
+        FileInputStream fis = new FileInputStream(path);
+        //防止路径乱码,如果utf-8乱码,改GBK
+        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+        BufferedReader br = new BufferedReader(isr);
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
+        br.close();
+        isr.close();
+        fis.close();
+        return list;
     }
 }

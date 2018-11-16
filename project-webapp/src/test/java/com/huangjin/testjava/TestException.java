@@ -18,8 +18,9 @@ public class TestException {
     public static void main(String[] args) throws RuntimeException {
         try {
             System.out.println(1);
-            throw new RuntimeException();
+            throw new RuntimeException("123");
         } catch(Exception e) {
+            e.printStackTrace();
             System.out.println(3);
         } finally {
             System.out.println(4);
