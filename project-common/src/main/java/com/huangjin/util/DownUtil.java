@@ -24,7 +24,7 @@ public class DownUtil {
      */
     public static void main(String[] args) throws Exception {
         String path = "https://www.baidu.com/img/bd_logo1.png";
-        String targetFile = "C:\\Users\\huang\\files\\huangjin";
+        String targetFile = "C:\\Users\\huang\\files\\huangjin.png";
 
         final DownUtil downUtil = new DownUtil(path, targetFile, 4);
         downUtil.download();

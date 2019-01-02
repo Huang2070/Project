@@ -295,5 +295,14 @@ public class TestClass {
             System.out.println("新文件名和旧文件名相同。。。");
         }
     }
+
+
+    @Test
+    public void test17() {
+        String timeStr = "1970-01-01 00:00:00";
+        Timestamp timestamp = Timestamp.valueOf(timeStr);
+        System.out.println(timestamp);
+    }
+
 }
 

@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.huangjin.domain.Aaa;
 import com.huangjin.domain.User;
+import com.huangjin.util.TimeUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -15,13 +16,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -534,4 +536,79 @@ public class TestTest {
         fis.close();
         return list;
     }
+
+    /**
+     * Lists.newArrayList如果参数是null, 则会生成一个包含null的list, 而不是一个空list
+     */
+    @Test
+    public void test39() {
+        Map<Integer, Long> map = Maps.newHashMap();
+        long l = map.get(123);
+
+        List list = Lists.newArrayList(l);
+        List list2 = Arrays.asList(l);
+        System.out.println(list);
+    }
+
+    /**
+     * new一个对象, 不会new里面的对象
+     */
+    @Test
+    public void test41() {
+        User use = new User();
+        System.out.println(use);
+    }
+
+    /**
+     * 计算Date类型时间差(天数)
+     * @throws ParseException
+     */
+    @Test
+    public void test43() throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time = df.parse("2018-06-06 11:30:24");
+        Long offShelfDays = (new Date().getTime() - time.getTime()) / (1000 * 60 * 60 * 24);
+        System.out.println(offShelfDays);
+
+    }
+
+
+    @Test
+    public void test44() {
+        boolean result = TimeUtil.isValidDate("2018-12-13 12:00:00", "yyyy-MM-dd HH:mm:ss");
+        System.out.println(result);
+    }
+
+    @Test
+    public void test45() {
+        String title = "考拉测试商品,请勿购买,性能测试";
+        if(title.indexOf("考拉测试商品") != -1) {
+            System.out.println(true);
+        }
+    }
+
+    @Test
+    public void test47() throws IOException {
+        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\1.txt");
+        FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\2.sql", true);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        String sql = "insert into tb_forbid_rule (id, supplier_id, brand_id, category_id, edit_goods_id, forbid_reason, status, type, operator) values ";
+        bw.write(sql);
+        bw.newLine();
+        for(String str : list) {
+            String insert = "(seq," + str + ",";
+            insert = insert + "0,0,0,'贸易模式不合规人工禁发',3,1,'operator'),";
+            bw.write(insert);
+            bw.newLine();
+        }
+        bw.close();
+        fw.close();
+    }
+
+    @Test
+    public void test49() {
+
+    }
+
 }
