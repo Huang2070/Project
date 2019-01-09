@@ -3,7 +3,7 @@ package com.huangjin.domain;
 import java.util.List;
 
 public class User {
-    private Integer id;
+    private int id;
     private String username;
     private String password;
     private List<String> phoneNum;
@@ -17,11 +17,11 @@ public class User {
         this.password = password;
     }
 
-    public Integer getId() {
-        return this.id;
+    public int getId() {
+        return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 

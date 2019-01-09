@@ -608,7 +608,29 @@ public class TestTest {
 
     @Test
     public void test49() {
+        String str = "1,2,3,4,5";
 
+        List<String> strList = Arrays.asList(str);
+
+        System.out.println(strList);
     }
 
+    @Test
+    public void test51() {
+        String str = "我是中国人";
+        System.out.println(str.length());
+
+        String str2 = "111abc";
+        System.out.println(str2.length());
+
+        String str3 = "  sd sd d  ";
+        System.out.println("|" + str3.trim() + "|");
+    }
+
+    @Test
+    public void test53() {
+        User user = new User();
+        System.out.println(user.getId());
+        System.out.println(user.getMoney());
+    }
 }
