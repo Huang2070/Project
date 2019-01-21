@@ -31,7 +31,7 @@ public class TestClass {
 
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse("2017-05-05 10:20:26");
+        Date date = simpleDateFormat.parse("2019-01-22 20:03:21");
         long ts = date.getTime();
         res = String.valueOf(ts);
 

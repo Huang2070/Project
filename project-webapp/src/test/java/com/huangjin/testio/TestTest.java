@@ -575,7 +575,7 @@ public class TestTest {
 
     @Test
     public void test44() {
-        boolean result = TimeUtil.isValidDate("2018-12-13 12:00:00", "yyyy-MM-dd HH:mm:ss");
+        boolean result = TimeUtil.isValidDate("2019-01-19 12:00:00", "yyyy-MM-dd HH:mm:ss");
         System.out.println(result);
     }
 
@@ -632,5 +632,37 @@ public class TestTest {
         User user = new User();
         System.out.println(user.getId());
         System.out.println(user.getMoney());
+    }
+
+
+    @Test
+    public void test55() {
+        Object obj = null;
+        String str = (String)obj;
+        System.out.println(str);
+    }
+
+    @Test
+    public void test57() {
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 0);
+        System.out.println(cal.getTime());
+
+    }
+
+    @Test
+    public void test59() throws ParseException {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date time = df.parse("2018-06-06 11:11:24");
+
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(time);
+
+        Calendar now = Calendar.getInstance(); //当前时间
+        Integer timeDiffHour = now.get(Calendar.HOUR_OF_DAY) - c1.get(Calendar.HOUR_OF_DAY);
+        Integer timeDiffMinute = now.get(Calendar.MINUTE) - c1.get(Calendar.MINUTE);
+        System.out.println(timeDiffHour);
+        System.out.println(timeDiffMinute);
     }
 }
