@@ -299,9 +299,9 @@ public class TestClass {
 
     @Test
     public void test17() {
-        String timeStr = "1970-01-01 00:00:00";
+        String timeStr = "2019-01-25 20:03:21";
         Timestamp timestamp = Timestamp.valueOf(timeStr);
-        System.out.println(timestamp);
+        System.out.println(timestamp.getTime());
     }
 
 }

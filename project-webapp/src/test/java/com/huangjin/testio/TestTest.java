@@ -585,6 +585,8 @@ public class TestTest {
         if(title.indexOf("考拉测试商品") != -1) {
             System.out.println(true);
         }
+
+        System.out.println(title.indexOf("aaa"));
     }
 
     @Test

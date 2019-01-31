@@ -1,5 +1,6 @@
 package com.huangjin.domain;
 
+import java.util.Date;
 import java.util.List;
 
 public class User {
@@ -8,6 +9,7 @@ public class User {
     private String password;
     private List<String> phoneNum;
     private long money;
+    private Date date;
 
     public User() {
     }
@@ -55,6 +57,14 @@ public class User {
 
     public void setMoney(long money) {
         this.money = money;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

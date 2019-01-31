@@ -7,6 +7,8 @@ import com.huangjin.domain.User;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,16 +74,19 @@ public class TestReflect {
         user1.setId(1);
         user1.setUsername("123");
         user1.setPassword("123");
+        user1.setDate(new Date());
 
         User user2 = new User();
         user2.setId(2);
         user2.setUsername("123");
         user2.setPassword("123");
+        user2.setDate(new Date());
 
         User user3 = new User();
         user3.setId(3);
         user3.setUsername("123");
         user3.setPassword("123");
+        user3.setDate(new Date());
 
         List<User> users = Lists.newArrayList();
         users.add(user1);
@@ -90,10 +95,18 @@ public class TestReflect {
 
         List<Map<String, Object>> list = this.getExportFieldAndData(User.class, users);
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(list.get(0).keySet());
 
-        for(Map.Entry<String, Object> entry : list.get(0).entrySet()) {
-            System.out.println(entry.getKey());
+        for(Map<String, Object> map : list) {
+            for(Map.Entry<String, Object> entry : map.entrySet()) {
+                if(entry.getValue() instanceof Date) {
+                    System.out.println(sdf.format(entry.getValue()));
+                } else {
+                    System.out.println(entry.getValue());
+                }
+
+            }
         }
     }
 
