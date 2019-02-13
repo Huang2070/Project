@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class ExcelLoad {
 
-
     @Test
     public void test() throws IOException {
         FileInputStream fis = new FileInputStream("C:\\Users\\huang\\Downloads\\增值税消费税数据修复.xlsx");
