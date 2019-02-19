@@ -138,7 +138,7 @@ public class TestClass {
     public void test6() {
         List<Integer> list = Lists.newArrayList(0,1,2,3,4,5,6,7,8,9);
 
-        List<Integer> subList = list.subList(0, 10);
+        List<Integer> subList = list.subList(0, 1);
         System.out.println(subList);
     }
 
@@ -167,16 +167,6 @@ public class TestClass {
         System.out.println(result);
     }
 
-
-    @Test
-    public void test9() {
-        Map<Integer, Integer> map = Maps.newHashMap();
-        map.put(1,1);
-        System.out.println(map.get(1));
-        map.put(1,2);
-        System.out.println(map.get(1));
-    }
-
     @Test
     public void test10() {
         try {
@@ -190,13 +180,6 @@ public class TestClass {
         }
 
         System.out.println(3);
-    }
-
-    @Test
-    public void test11() {
-        Map<String, Object> map = Maps.newHashMap();
-        Object num = map.get("hehe");
-        System.out.println(num);
     }
 
     @Test

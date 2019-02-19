@@ -3,7 +3,7 @@ package com.huangjin.util;
 /**
  * Created by wb-tianxiaoxi on 2015/11/16.
  */
-public class AppNumToLetter {
+public class CharacterUtil {
 
     // 将数字转换成字母
     public static String numToLetter(String input) {
@@ -31,6 +31,30 @@ public class AppNumToLetter {
             }
         }
         return str.toString();
+    }
+
+    /**
+     * 计算字符串长度,中文字符长度为2
+     * @param value
+     * @return
+     */
+    public static int getChineseCharCount(String value) {
+
+        int strLength = 0;
+        String chinese = "[\u4e00-\u9fa5]";
+        for (int i = 0; i < value.length(); i++) {
+            // 获取一个字符
+            String temp = value.substring(i, i + 1);
+            // 判断是否为中文字符
+            if (temp.matches(chinese)) {
+                // 中文字符长度为2
+                strLength += 2;
+            } else {
+                // 其他字符长度为1
+                strLength += 1;
+            }
+        }
+        return strLength;
     }
 
 }

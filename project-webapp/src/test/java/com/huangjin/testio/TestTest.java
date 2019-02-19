@@ -9,17 +9,16 @@ import com.huangjin.domain.Aaa;
 import com.huangjin.domain.User;
 import com.huangjin.util.TimeUtil;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -634,6 +633,7 @@ public class TestTest {
         User user = new User();
         System.out.println(user.getId());
         System.out.println(user.getMoney());
+
     }
 
 
@@ -667,5 +667,45 @@ public class TestTest {
         System.out.println(timeDiffMinute);
     }
 
+    @Test
+    public void test61() {
+        String str = "hehe, wo shi 中国人";
+        System.out.println(str.contains("hehe"));
+        System.out.println(str.contains("中国"));
+        System.out.println(str.contains("中人"));
+    }
+
+    @Test
+    public void test65() throws ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date now = sdf.parse("2020-02-13 00:00:00");
+
+        String value = (new Timestamp(now.getTime())).toString();
+
+        System.out.println(value);
+    }
+
+
+    @Test
+    public void test67() throws IOException {
+        BufferedWriter goodsIdsWriter = new BufferedWriter(new FileWriter(new File("C:\\Users\\huang\\Downloads\\hehehehehe.txt")));
+
+        List<Long> list = Lists.newArrayList();
+        for(Long i = 1L; i < 100000; i++) {
+            list.add(i);
+        }
+
+        for (Long item : list) {
+            if(item % 1000 == 0) {
+                System.out.println("currently @ " + item);
+            }
+
+            goodsIdsWriter.write(item + "");
+            goodsIdsWriter.write(System.getProperty("line.separator"));
+        }
+        goodsIdsWriter.close();
+    }
 
 }
