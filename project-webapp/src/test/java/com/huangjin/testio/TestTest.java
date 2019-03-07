@@ -23,6 +23,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -192,12 +194,47 @@ public class TestTest {
                 "</html>";
 
 
-        Document doc = Jsoup.parse(html);
-        Elements videoElements = doc.select("image").remove();
-        for(Element element : videoElements) {
+        String html2 = "<br/>\n" +
+                "<div data-filter=\"allStyle\"></div>\n" +
+                "<div>\n" +
+                "  <img src=\"//pop.nosdn.127.net/4aefd357-d205-48eb-8a02-052547b3b965\" width=\"100%\">\n" +
+                "  <br/>\n" +
+                "  <br/></div>\n" +
+                "<img src=\"http://pop.nosdn.127.net/7ef74df4-cfb0-4539-9618-2af2f954229d\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/ab9954f8-989a-4a29-a0cf-5790df9e7c40\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/f893c0cb-1e06-4a3b-9dfe-09d64d4b39a8\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/e647144a-a907-4689-b170-c9b4382fe02f\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/1fc300e1-46b3-4b01-b0cb-72a40b270a2d\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/cfb241f1-1d78-4a0e-8b16-b89d10347724\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/5374a5b8-742a-40dd-bcfc-79ec4d6d19e3\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/49845161-d484-4fe8-8afc-53f0fd4506e2\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/fa80e9d3-dfc1-4f46-8225-5feaa6fc1e03\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/3aa29ec1-1c5a-4bee-bcaa-89e85bcc36ab\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/586b3aaa-cea2-4565-b441-8e4d306520cc\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/462c464a-9e34-4303-a672-a479fb97549d\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/82746253-e696-4b78-aaa1-921c9ba25b9e\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/7c2ce377-7e75-49c1-a075-534b488537d9\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/ccca320d-a34b-4faf-89ef-13400e24ce98\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/9f610706-fa38-4c97-b986-2e2d987ab970\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/a18f8927-fc2a-4481-91e6-e4547ca6a012\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/5920b790-3c3f-456b-9743-9bb6f9c516dc\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/bc25d43c-2770-41b0-aba0-627b6deb28ef\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/d39094be-2663-4ead-aaad-19495e058fcc\" style=\"width: 100%; height: 100%;\">\n" +
+                "<img src=\"http://pop.nosdn.127.net/c2be0ff9-903a-4407-97a5-dde40a5e7a12\">";
+
+        Document doc = Jsoup.parse(html2);
+        Elements imgElements = doc.select("img[src]");
+        for(Element element : imgElements) {
             String src = element.attr("src");
-            System.out.println(src);
+            if(src.equals("http://pop.nosdn.127.net/7ef74df4-cfb0-4539-9618-2af2f954229d")) {
+                element.remove();
+            }
+
+            if(src.equals("http://pop.nosdn.127.net/c2be0ff9-903a-4407-97a5-dde40a5e7a12")) {
+                element.attr("src", "aaa");
+            }
         }
+        System.out.println(doc.toString());
     }
 
     @Test
@@ -206,13 +243,6 @@ public class TestTest {
         Object obj = "1";
         longList.add((Long)obj);
         System.out.println(longList);
-    }
-
-    @Test
-    public void test13() {
-        Aaa aaa = new Aaa();
-        User use = aaa.getUser();
-        System.out.println(use.getPassword());
     }
 
     @Test
@@ -238,13 +268,6 @@ public class TestTest {
         for(User user : sets) {
             System.out.println(user.getUsername());
         }
-    }
-
-    @Test
-    public void test15() {
-        Set<Integer> sets = Sets.newHashSet();
-        System.out.println(sets.add(1));
-        System.out.println(sets.add(1));
     }
 
     @Test
@@ -513,27 +536,22 @@ public class TestTest {
         fw.close();
     }
 
+    @Test
+    public void test337() throws IOException {
+        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\qqqqq.sql");
+        FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\updateForbidRule.sql", true);
+        BufferedWriter bw = new BufferedWriter(fw);
+        for(String str : list) {
+            String id = str.substring(0, str.indexOf("\t"));
+            String businessType = str.substring(str.lastIndexOf("\t") + 1);
 
-    /**
-     * 逐行读取文件
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    private static List<String> readFile(String path) throws IOException {
-        List<String> list = Lists.newArrayList();
-        FileInputStream fis = new FileInputStream(path);
-        //防止路径乱码,如果utf-8乱码,改GBK
-        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-        BufferedReader br = new BufferedReader(isr);
-        String line = "";
-        while ((line = br.readLine()) != null) {
-            list.add(line);
+            String udpateSql = " update tb_forbid_rule set business_type = " + businessType + " where id = " + id + ";";
+            bw.write(udpateSql);
+            bw.newLine();
         }
-        br.close();
-        isr.close();
-        fis.close();
-        return list;
+
+        bw.close();
+        fw.close();
     }
 
     /**
@@ -707,5 +725,54 @@ public class TestTest {
         }
         goodsIdsWriter.close();
     }
+
+
+    @Test
+    public void test69() {
+        System.out.print(1 + System.getProperty("line.separator") + 2);
+    }
+
+    @Test
+    public void test71() {
+        System.out.println(this.getClass().getClassLoader().getResource("").getPath());
+    }
+
+    @Test
+    public void test73() {
+        Pattern p = Pattern.compile("(满.*减)|(满.*折)|(件.*折)|(半价)");
+        Matcher m = p.matcher("折叠椅"); //要验证的字符串
+        System.out.println(m.find());
+    }
+
+    @Test
+    public void test75() {
+        User user = new User();
+        System.out.println(user.getNum());
+    }
+
+
+    /**
+     * 逐行读取文件
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    private static List<String> readFile(String path) throws IOException {
+        List<String> list = Lists.newArrayList();
+        FileInputStream fis = new FileInputStream(path);
+        //防止路径乱码,如果utf-8乱码,改GBK
+        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+        BufferedReader br = new BufferedReader(isr);
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
+        br.close();
+        isr.close();
+        fis.close();
+        return list;
+    }
+
+
 
 }

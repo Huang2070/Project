@@ -10,6 +10,7 @@ public class User {
     private List<String> phoneNum;
     private long money;
     private Date date;
+    private Integer num;
 
     public User() {
     }
@@ -61,6 +62,14 @@ public class User {
 
     public Date getDate() {
         return date;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 
     public void setDate(Date date) {

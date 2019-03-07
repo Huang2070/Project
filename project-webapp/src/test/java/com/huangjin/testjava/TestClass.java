@@ -87,13 +87,13 @@ public class TestClass {
 
     @Test
     public void test3() {
-        Date date = new Date(1526601600000L);
+        Date date = new Date(1549209600000L);
         System.out.println(date);
-
-
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(sdf.format(date));
+
             Date date1 = sdf.parse("2018-05-23 08:00:00");
 
             Date date2 = sdf.parse("2018-06-15 08:00:00");
