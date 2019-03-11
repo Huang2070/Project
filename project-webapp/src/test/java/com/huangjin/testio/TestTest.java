@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +27,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static java.math.BigDecimal.ROUND_DOWN;
 
 /**
  * Created by huang on 2016-11-8.
@@ -750,6 +753,34 @@ public class TestTest {
         System.out.println(user.getNum());
     }
 
+    @Test
+    public void test77() {
+        BigDecimal ChinaGDP = new BigDecimal(13.00);
+        BigDecimal USAGDP = new BigDecimal(20.00);
+
+        int year = 2019;
+        for(int i = 1; i < 30; i++) {
+            ChinaGDP = ChinaGDP.multiply(BigDecimal.valueOf(1.05)).setScale(2, ROUND_DOWN);
+            USAGDP = USAGDP.multiply(BigDecimal.valueOf(1.02)).setScale(2, ROUND_DOWN);
+            System.out.println(year + "---China:" + ChinaGDP + "---USA:" + USAGDP);
+            year++;
+        }
+    }
+
+    @Test
+    public void test79() {
+
+        String str ="中华人民共(和国)，简称(中国)。";
+
+        Matcher mat = Pattern.compile("(?<=\\()(\\S+)(?=\\))").matcher(str);
+        while(mat.find()){
+            System.out.println(mat.group());
+        }
+
+        String result = str.substring(str.lastIndexOf("(") + 1, str.lastIndexOf(")"));
+        System.out.println(result);
+    }
+
 
     /**
      * 逐行读取文件
@@ -772,7 +803,4 @@ public class TestTest {
         fis.close();
         return list;
     }
-
-
-
 }
