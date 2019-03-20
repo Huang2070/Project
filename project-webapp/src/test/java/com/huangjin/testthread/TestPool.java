@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 
 /**
  * Created by huang on 2017-3-6.
+ * 查找文件目录下文件里面的字符串
  */
 public class TestPool {
     public static void main(String[] args) throws Exception {
@@ -29,7 +30,6 @@ public class TestPool {
             e.printStackTrace();
         } catch (InterruptedException e) {
         }
-
 
         int largestPoolSize = ((ThreadPoolExecutor) pool).getLargestPoolSize();
         System.out.println("largest pool size=" + largestPoolSize);

@@ -88,13 +88,13 @@ public class TestClass {
 
     @Test
     public void test3() {
-        Date date = new Date(1526601600000L);
+        Date date = new Date(1549209600000L);
         System.out.println(date);
-
-
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(sdf.format(date));
+
             Date date1 = sdf.parse("2018-05-23 08:00:00");
 
             Date date2 = sdf.parse("2018-06-15 08:00:00");
@@ -139,7 +139,7 @@ public class TestClass {
     public void test6() {
         List<Integer> list = Lists.newArrayList(0,1,2,3,4,5,6,7,8,9);
 
-        List<Integer> subList = list.subList(0, 10);
+        List<Integer> subList = list.subList(0, 1);
         System.out.println(subList);
     }
 
@@ -168,16 +168,6 @@ public class TestClass {
         System.out.println(result);
     }
 
-
-    @Test
-    public void test9() {
-        Map<Integer, Integer> map = Maps.newHashMap();
-        map.put(1,1);
-        System.out.println(map.get(1));
-        map.put(1,2);
-        System.out.println(map.get(1));
-    }
-
     @Test
     public void test10() {
         try {
@@ -191,13 +181,6 @@ public class TestClass {
         }
 
         System.out.println(3);
-    }
-
-    @Test
-    public void test11() {
-        Map<String, Object> map = Maps.newHashMap();
-        Object num = map.get("hehe");
-        System.out.println(num);
     }
 
     @Test
