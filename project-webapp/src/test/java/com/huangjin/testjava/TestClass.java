@@ -32,7 +32,7 @@ public class TestClass {
 
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse("2017-05-05 10:20:26");
+        Date date = simpleDateFormat.parse("2019-01-22 20:03:21");
         long ts = date.getTime();
         res = String.valueOf(ts);
 
@@ -296,5 +296,14 @@ public class TestClass {
             System.out.println("新文件名和旧文件名相同。。。");
         }
     }
+
+
+    @Test
+    public void test17() {
+        String timeStr = "2019-01-25 20:03:21";
+        Timestamp timestamp = Timestamp.valueOf(timeStr);
+        System.out.println(timestamp.getTime());
+    }
+
 }
 

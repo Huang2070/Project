@@ -1,13 +1,15 @@
 package com.huangjin.domain;
 
+import java.util.Date;
 import java.util.List;
 
 public class User {
-    private Integer id;
+    private int id;
     private String username;
     private String password;
     private List<String> phoneNum;
     private long money;
+    private Date date;
 
     public User() {
     }
@@ -17,11 +19,11 @@ public class User {
         this.password = password;
     }
 
-    public Integer getId() {
-        return this.id;
+    public int getId() {
+        return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -57,6 +59,14 @@ public class User {
         this.money = money;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,5 +81,16 @@ public class User {
     @Override
     public int hashCode() {
         return username.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNum=" + phoneNum +
+                ", money=" + money +
+                '}';
     }
 }
