@@ -5,11 +5,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.huangjin.domain.Aaa;
 import com.huangjin.domain.User;
+import com.huangjin.util.CharacterUtil;
+import com.huangjin.util.IOUtils;
 import com.huangjin.util.TimeUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -285,7 +287,7 @@ public class TestTest {
     public void test17() {
         try {
             String filePath = this.getClass().getResource("/offshelf.txt").getPath();
-            List<String> lines = this.readFile(filePath);
+            List<String> lines = IOUtils.readFile(filePath);
             for(String str : lines) {
                 System.out.println(str);
             }
@@ -523,7 +525,7 @@ public class TestTest {
 
     @Test
     public void test37() throws IOException {
-        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\bbb.sql");
+        List<String> list = IOUtils.readFile("C:\\Users\\huang\\Downloads\\bbb.sql");
         FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\ddd.sql", true);
         BufferedWriter bw = new BufferedWriter(fw);
         for(String str : list) {
@@ -541,14 +543,14 @@ public class TestTest {
 
     @Test
     public void test337() throws IOException {
-        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\qqqqq.sql");
+        List<String> list = IOUtils.readFile("C:\\Users\\huang\\Downloads\\qqqqq.sql");
         FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\updateForbidRule.sql", true);
         BufferedWriter bw = new BufferedWriter(fw);
         for(String str : list) {
             String id = str.substring(0, str.indexOf("\t"));
             String businessType = str.substring(str.lastIndexOf("\t") + 1);
 
-            String udpateSql = " update tb_forbid_rule set business_type = " + businessType + " where id = " + id + ";";
+            String udpateSql = "update tb_forbid_rule set business_type = " + businessType + " where id = " + id + ";";
             bw.write(udpateSql);
             bw.newLine();
         }
@@ -577,6 +579,7 @@ public class TestTest {
     public void test41() {
         User use = new User();
         System.out.println(use);
+        System.out.println(use.isMan());
     }
 
     /**
@@ -611,7 +614,7 @@ public class TestTest {
 
     @Test
     public void test47() throws IOException {
-        List<String> list = this.readFile("C:\\Users\\huang\\Downloads\\1.txt");
+        List<String> list = IOUtils.readFile("C:\\Users\\huang\\Downloads\\1.txt");
         FileWriter fw = new FileWriter("C:\\Users\\huang\\Downloads\\2.sql", true);
         BufferedWriter bw = new BufferedWriter(fw);
 
@@ -689,14 +692,6 @@ public class TestTest {
     }
 
     @Test
-    public void test61() {
-        String str = "hehe, wo shi 中国人";
-        System.out.println(str.contains("hehe"));
-        System.out.println(str.contains("中国"));
-        System.out.println(str.contains("中人"));
-    }
-
-    @Test
     public void test65() throws ParseException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -748,19 +743,13 @@ public class TestTest {
     }
 
     @Test
-    public void test75() {
-        User user = new User();
-        System.out.println(user.getNum());
-    }
-
-    @Test
     public void test77() {
         BigDecimal ChinaGDP = new BigDecimal(13.00);
         BigDecimal USAGDP = new BigDecimal(20.00);
 
         int year = 2019;
-        for(int i = 1; i < 30; i++) {
-            ChinaGDP = ChinaGDP.multiply(BigDecimal.valueOf(1.05)).setScale(2, ROUND_DOWN);
+        for(int i = 1; i < 33; i++) {
+            ChinaGDP = ChinaGDP.multiply(BigDecimal.valueOf(1.06)).setScale(2, ROUND_DOWN);
             USAGDP = USAGDP.multiply(BigDecimal.valueOf(1.02)).setScale(2, ROUND_DOWN);
             System.out.println(year + "---China:" + ChinaGDP + "---USA:" + USAGDP);
             year++;
@@ -781,26 +770,46 @@ public class TestTest {
         System.out.println(result);
     }
 
+    @Test
+    public void test81() {
+        Integer x = new Integer(123);
+        Integer y = new Integer(123);
+        System.out.println(x == y);    // false
+        System.out.println(x.equals(y)); //true
+        Integer z = Integer.valueOf(123);
+        Integer k = Integer.valueOf(123);
+        System.out.println(z == k);   // true
 
-    /**
-     * 逐行读取文件
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    private static List<String> readFile(String path) throws IOException {
-        List<String> list = Lists.newArrayList();
-        FileInputStream fis = new FileInputStream(path);
-        //防止路径乱码,如果utf-8乱码,改GBK
-        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-        BufferedReader br = new BufferedReader(isr);
-        String line = "";
-        while ((line = br.readLine()) != null) {
-            list.add(line);
-        }
-        br.close();
-        isr.close();
-        fis.close();
-        return list;
+        Integer a = 1111;
+        Integer b = 1111;
+        System.out.println(a == b);
     }
+
+    @Test
+    public void test83() {
+        String a = "aaa";
+        a = "bbb";
+        System.out.println(a);
+
+    }
+
+    @Test
+    public void test85() {
+        int count = CharacterUtil.getChineseCharCount("YAMAHA 雅马哈P-125B 125WH 重锤电子钢琴主机+原装木架+原装");
+        System.out.println(count);
+    }
+
+    @Test
+    public void test87() throws IOException {
+        IOUtils.clearInfoForFile("C:\\Users\\huang\\Desktop\\qqqqq.sql");
+
+        File file = new File("C:\\Users\\huang\\Desktop\\qqqqq.sql");
+        FileOutputStream fosInfo = new FileOutputStream(file, true); //日志文件
+        PrintStream psInfo = new PrintStream(fosInfo);
+        psInfo.println(100);
+        psInfo.println(300);
+        psInfo.close();
+
+    }
+
 }

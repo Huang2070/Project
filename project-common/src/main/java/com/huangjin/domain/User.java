@@ -11,6 +11,7 @@ public class User {
     private long money;
     private Date date;
     private Integer num;
+    private boolean man;
 
     public User() {
     }
@@ -74,6 +75,14 @@ public class User {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public boolean isMan() {
+        return man;
+    }
+
+    public void setMan(boolean man) {
+        this.man = man;
     }
 
     @Override
