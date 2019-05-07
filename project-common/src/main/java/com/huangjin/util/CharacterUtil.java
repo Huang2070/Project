@@ -41,7 +41,7 @@ public class CharacterUtil {
     public static int getChineseCharCount(String value) {
 
         int strLength = 0;
-        String chinese = "[\u4e00-\u9fa5]";
+        String chinese = "[^\\x00-\\xff]";
         for (int i = 0; i < value.length(); i++) {
             // 获取一个字符
             String temp = value.substring(i, i + 1);

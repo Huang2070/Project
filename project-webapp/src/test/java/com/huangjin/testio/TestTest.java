@@ -9,6 +9,8 @@ import com.huangjin.domain.User;
 import com.huangjin.util.CharacterUtil;
 import com.huangjin.util.IOUtils;
 import com.huangjin.util.TimeUtil;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +22,7 @@ import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -795,7 +798,7 @@ public class TestTest {
 
     @Test
     public void test85() {
-        int count = CharacterUtil.getChineseCharCount("YAMAHA 雅马哈P-125B 125WH 重锤电子钢琴主机+原装木架+原装");
+        int count = CharacterUtil.getChineseCharCount("长度必须是100  to  200是大大大啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊~！@#￥%……&*（））——+}{}|}“”：》《》-+*/？aaaaa啊啊啊啊");
         System.out.println(count);
     }
 
@@ -809,7 +812,127 @@ public class TestTest {
         psInfo.println(100);
         psInfo.println(300);
         psInfo.close();
-
     }
 
+    @Test
+    public void test89() {
+        Map<Integer, List<Long>> map = Maps.newHashMap();
+        List<Long> list = map.get(1);
+
+        for(int i = 0; i < 3; i++) {
+            if(CollectionUtils.isEmpty(list)) {
+                list = Lists.newArrayList(2L);
+                map.put(1, list);
+            } else {
+                list.add(3L);
+            }
+        }
+
+        System.out.println(map.get(1));
+    }
+
+    @Test
+    public void test91() {
+        List<Integer> list = Lists.newArrayList(1,2,3);
+        list.removeAll(null);
+        System.out.println(list);
+    }
+
+    @Test
+    public void test93() {
+        List<Integer> list = Lists.newArrayList(1,2,3,4,5,6,7,8,9);
+        List<Integer> list2 = Lists.newArrayList(1,2,3);
+        Iterator<Integer> iterator = list2.iterator();
+
+        while(iterator.hasNext()) {
+            Integer i = iterator.next();
+            if(i == 3) {
+                list.remove(i);
+            }
+        }
+        System.out.println(list);
+    }
+
+    @Test
+    public void test95() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(sdf.format(new Date()));
+    }
+
+    @Test
+    public void test97() {
+        String url = "https://pop.nosdn.127.net/6d4f9342-101b-4c74-b135-f967f686c048";
+        if(url.startsWith("http:")) {
+            url = url.substring(5);
+        } else if(url.startsWith("https:")) {
+            url = url.substring(6);
+        }
+        System.out.println(url);
+    }
+
+    @Test
+    public void test99() throws IOException {
+        final File file = new File("C:\\Users\\huang\\Desktop\\ddd.txt");
+        InputStream inputStream = null;
+
+        try {
+            inputStream = new FileInputStream(file);
+            inputStream.close();
+            System.out.println(file.getName());
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            inputStream.close();
+            System.out.println("end");
+        }
+    }
+
+    @Test
+    public void test101() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        User user = new User();
+        user.setDate(new Date());
+        user.setId(1);
+        user.setUsername("huangjin");
+        Map<String, Object> param = BeanUtils.describe(user);
+
+        for(Map.Entry<String, Object> entry : param.entrySet()) {
+            System.out.println(entry.getKey() + "---" + entry.getValue());
+        }
+    }
+
+
+    @Test
+    public void test103() {
+        String str = "huangjin(1919191)";
+        String code = str.substring(str.lastIndexOf("(") + 1, str.lastIndexOf(")"));
+        System.out.println(code);
+    }
+
+    @Test
+    public void test105() {
+        Set<String> set = Sets.newHashSet();
+        set.add("1");
+        set.add("2");
+        set.add("3");
+
+        System.out.println(StringUtils.join(set.toArray(), ","));
+    }
+
+    @Test
+    public void test107() {
+        String strFormat = "贵司【%s】%s公司，在考拉平台申请的“%s”品牌新建申请，已被审核拒绝；审核拒绝原因为：%s；请及时前往https://partner.kaola.com/ 登陆进入信息与权限-品牌资质管理菜单跟进处理；";
+
+        String str = String.format(strFormat, 1, "2", "3", null);
+        System.out.println(str);
+
+    }
 }
