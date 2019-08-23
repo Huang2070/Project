@@ -60,10 +60,10 @@
           <artifactId>fastjson</artifactId>
       </dependency>
 
-      <dependency>
-          <groupId>com.netease.haitao</groupId>
-          <artifactId>xlsx-streamer</artifactId>
-      </dependency>
+<!--      <dependency>-->
+<!--          <groupId>com.netease.haitao</groupId>-->
+<!--          <artifactId>xlsx-streamer</artifactId>-->
+<!--      </dependency>-->
 
       <dependency>
           <groupId>commons-io</groupId>

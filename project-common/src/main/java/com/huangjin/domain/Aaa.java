@@ -4,7 +4,7 @@ package com.huangjin.domain;
  * @author 黄金(huangjin)
  * @since 2017/8/29 11:23.
  */
-public class Aaa {
+public class Aaa extends Bbb {
 
     private City city;
 

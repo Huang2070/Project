@@ -5,7 +5,10 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.huangjin.domain.Aaa;
 import com.huangjin.domain.User;
+import com.huangjin.domain.showtest.LimitShowVo;
+import com.huangjin.domain.showtest.LimitSingleShowConfVO;
 import com.huangjin.util.CharacterUtil;
 import com.huangjin.util.IOUtils;
 import com.huangjin.util.TimeUtil;
@@ -19,10 +22,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -33,7 +40,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import static java.math.BigDecimal.ROUND_DOWN;
+import static java.util.regex.Pattern.compile;
 
 /**
  * Created by huang on 2016-11-8.
@@ -170,6 +181,14 @@ public class TestTest {
         List<String> passwordList = Lists.newArrayList();
         passwordList.addAll(userList.stream().map(User::getPassword).collect(Collectors.toList()));
         System.out.println(passwordList);
+
+
+        userList = userList.stream().sorted(Comparator.comparing(User::getPassword).reversed())
+            .collect(Collectors.toList());
+        for(User user : userList) {
+            System.out.println(user.getUsername() + "---" + user.getPassword());
+        }
+
     }
 
     @Test
@@ -698,12 +717,15 @@ public class TestTest {
     public void test65() throws ParseException {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = sdf.parse("2019-07-26 00:00:00");
+        System.out.println(now.getTime());
 
-        Date now = sdf.parse("2020-02-13 00:00:00");
-
-        String value = (new Timestamp(now.getTime())).toString();
-
-        System.out.println(value);
+        String value0 = (new Timestamp(1558593599000L)).toString();
+        String value1 = (new Timestamp(1565076007000L)).toString();
+        String value2 = (new Timestamp(1565076002000L)).toString();
+        System.out.println(value0);
+        System.out.println(value1);
+        System.out.println(value2);
     }
 
 
@@ -933,6 +955,95 @@ public class TestTest {
 
         String str = String.format(strFormat, 1, "2", "3", null);
         System.out.println(str);
-
     }
+
+
+    @Test
+    public void test109() {
+
+        String url = "https://dianliuegg.youku.com/share/video/XNDI1MzIwMzgwOA==?routeType=FAXIAN&sharekey=710ca9597e0bb9c7ffb975cd104cb5ca7&refer=pgy_bd.yl151641_00003050_000000_iUvEzm_19071800";
+        if (url.startsWith("http")) {
+
+            if(url.contains("dianliu")) {
+                Pattern p = compile("/([a-zA-Z0-9]*==)");
+                Matcher m = p.matcher(url);
+                if (m.find()) {
+                    String urlVid = m.group(1);
+                    if (StringUtils.isNotEmpty(urlVid)) {
+                        System.out.println(urlVid);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void test111() {
+        Aaa aaa = new Aaa();
+        System.out.println(aaa.getClass());
+
+        Type type = aaa.getClass().getGenericSuperclass();
+        System.out.println(type);
+
+        ParameterizedType pt = (ParameterizedType) type;
+        Type[] ts = pt.getActualTypeArguments();
+        Class c = (Class) ts[0];
+        System.out.println(c);
+    }
+
+    @Test
+    public void test113() {
+
+        List<String> lst = new ArrayList<String>();
+        lst.add("aaa");
+        lst.add("bbb");
+        lst.add("ccc");
+        lst.add("ddd");
+        lst.add("eee");
+        lst.add("fff");
+        Iterator<String> iterator = lst.iterator();
+
+        StringBuilder sb = new StringBuilder();
+        //iterator.hasNext()如果存在元素的话返回true
+        while(iterator.hasNext()) {
+            //iterator.next()返回迭代的下一个元素
+
+            sb.append(iterator.next());
+            if(iterator.hasNext()) {
+                sb.append(",");
+            }
+        }
+        System.out.println(sb);
+    }
+
+
+    @Test
+    public void test115() {
+        String searchStr = "hehe";
+        String str = "notin(video_source, \"" + searchStr + "\")";
+        System.out.println(str);
+
+        Map<String, String> map = Maps.newHashMap();
+
+        String str1 = map.get(null);
+        System.out.println(str1);
+    }
+
+    @Test
+    public void test117() {
+        LimitSingleShowConfVO limitSingleShowConfVO = new LimitSingleShowConfVO();
+        //limitSingleShowConfVO.setId(1L);
+
+        List<LimitShowVo> limitShowVos = Lists.newArrayList();
+        LimitShowVo limitShowVo = new LimitShowVo();
+        limitShowVo.setShowLongId(100L);
+        limitShowVos.add(limitShowVo);
+        limitSingleShowConfVO.setLimitShowVos(limitShowVos);
+
+
+        String data = JSON.toJSONString(limitSingleShowConfVO);
+
+        System.out.println(data);
+    }
+
 }
