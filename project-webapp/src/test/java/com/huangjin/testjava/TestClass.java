@@ -132,6 +132,13 @@ public class TestClass {
         List<String> obj3 = Arrays.asList(jsonObject.getJSONArray("obj3").toArray(new String[]{}));
         System.out.println(date);
         System.out.println(obj3);
+
+        String mapstr = "{\"1\":\"1,2,3\",\"2\":\"2,3,4\",\"3\":\"3,4,5\"}";
+
+        JSONObject mapjson = JSON.parseObject(mapstr);
+        System.out.println(mapjson.getString("1"));
+        System.out.println(mapjson.getString("2"));
+        System.out.println(mapjson);
     }
 
 

@@ -11,6 +11,26 @@ import java.util.List;
 public class IOUtils {
 
     /**
+     * 逐行读取输入流
+     * @param in
+     * @return
+     * @throws IOException
+     */
+    public static List<String> readInputStream(InputStream in) throws IOException {
+        List<String> list = Lists.newArrayList();
+        //防止路径乱码,如果utf-8乱码,改GBK
+        InputStreamReader isr = new InputStreamReader(in, "UTF-8");
+        BufferedReader br = new BufferedReader(isr);
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            list.add(line);
+        }
+        br.close();
+        isr.close();
+        return list;
+    }
+
+    /**
      * 逐行读取文件
      * @param path
      * @return

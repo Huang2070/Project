@@ -1,33 +1,17 @@
 package com.huangjin.testio;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.huangjin.domain.Aaa;
-import com.huangjin.domain.User;
-import com.huangjin.domain.showtest.LimitShowVo;
-import com.huangjin.domain.showtest.LimitSingleShowConfVO;
-import com.huangjin.util.CharacterUtil;
-import com.huangjin.util.IOUtils;
-import com.huangjin.util.TimeUtil;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-import org.springframework.util.AntPathMatcher;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -35,13 +19,57 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.activation.MimetypesFileTypeMap;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.huangjin.domain.Aaa;
+import com.huangjin.domain.User;
+import com.huangjin.util.CharacterUtil;
+import com.huangjin.util.DateUtil;
+import com.huangjin.util.IOUtils;
+import com.huangjin.util.JsonConvertUtil;
+import com.huangjin.util.TimeUtil;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.junit.Test;
+import org.quartz.CronExpression;
+import org.springframework.util.AntPathMatcher;
 
 import static java.math.BigDecimal.ROUND_DOWN;
 import static java.util.regex.Pattern.compile;
@@ -401,7 +429,7 @@ public class TestTest {
     @Test
     public void test24() {
         long timeMills = System.currentTimeMillis();
-        System.out.println(String.valueOf(timeMills) + RandomUtils.nextInt(1, 1000));
+        System.out.println(String.valueOf(timeMills));
         System.out.println(RandomUtils.nextInt(1, 1000));
 
     }
@@ -626,12 +654,25 @@ public class TestTest {
 
     @Test
     public void test45() {
-        String title = "考拉测试商品,请勿购买,性能测试";
-        if(title.indexOf("考拉测试商品") != -1) {
-            System.out.println(true);
-        }
+        String img = "http://r1.ykimg.com/050B00005BD17EEEADA7B2063E038B0D";
+        if(img.indexOf(".com/") != -1) {
 
-        System.out.println(title.indexOf("aaa"));
+            Integer index = img.indexOf(".com/") + 5;
+
+            String imgUrl = img.substring(0, index);
+            System.out.println(imgUrl);
+            String imgId = img.substring(index);
+            System.out.println(imgId);
+
+            if(imgId.startsWith("050")) {
+                imgId = "050C" + imgId.substring(4);
+            } else if(imgId.startsWith("054")) {
+                imgId = "0541" + imgId.substring(4);
+            }
+
+            String replaceImg = imgUrl + imgId;
+            System.out.println(replaceImg);
+        }
     }
 
     @Test
@@ -726,6 +767,12 @@ public class TestTest {
         System.out.println(value0);
         System.out.println(value1);
         System.out.println(value2);
+
+        System.out.println(new Date((long)Integer.MAX_VALUE*1000));
+
+        System.out.println(Integer.MAX_VALUE);
+
+        System.out.println((long)Integer.MAX_VALUE*1000);
     }
 
 
@@ -1029,21 +1076,317 @@ public class TestTest {
         System.out.println(str1);
     }
 
+
     @Test
-    public void test117() {
-        LimitSingleShowConfVO limitSingleShowConfVO = new LimitSingleShowConfVO();
-        //limitSingleShowConfVO.setId(1L);
+    public void test119() {
 
-        List<LimitShowVo> limitShowVos = Lists.newArrayList();
-        LimitShowVo limitShowVo = new LimitShowVo();
-        limitShowVo.setShowLongId(100L);
-        limitShowVos.add(limitShowVo);
-        limitSingleShowConfVO.setLimitShowVos(limitShowVos);
+        Date date = new Date();// 取时间
+        Calendar calendar = new GregorianCalendar();
 
+        calendar.setTime(date);
 
-        String data = JSON.toJSONString(limitSingleShowConfVO);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
-        System.out.println(data);
+        System.out.println(calendar.getTime());
+
     }
 
+    @Test
+    public void test121() {
+        String str = "111.3";
+        Double dou = Double.parseDouble(str);
+        Long l = dou.longValue();
+        System.out.println(l);
+
+
+        String str1 = "hehexixixlalalal";
+        System.out.println(str1.contains("hehe"));
+
+    }
+
+    @Test
+    public void test123() {
+        String str = "CCTV,天津卫视,CCTV-1,CCTV-2,CCTV-3,CCTV-4,CCTV-5,CCTV-6,CCTV-7,CCTV-8,CCTV-13";
+
+        System.out.println(str.indexOf("CCTV-1"));
+
+    }
+
+    @Test
+    public void test127() {
+        Integer count = 10000;
+        this.count(count);
+        System.out.println(count);
+
+        User user = new User();
+        user.setId(1);
+        this.setUser(user);
+        System.out.println(user.getId());
+    }
+
+
+    private void count(Integer count) {
+        count++;
+    }
+
+    private void setUser(User user) {
+        user.setId(2);
+    }
+
+    @Test
+    public void test129() throws Exception {
+        List<String> list = IOUtils.readFile("/Users/huangjin/Documents/newToken.txt");
+        FileWriter fw = new FileWriter("/Users/huangjin/Documents/newTokenUpdate.sql", true);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        for(String str : list) {
+
+            String[] splitStr = str.split(",");
+            if(splitStr.length != 2) {
+                throw new Exception("长度不合法");
+            }
+
+            String uid = splitStr[0];
+            String token = splitStr[1];
+
+            String sql = "update t_pgy_userinfo_channel set access_token = '" + token + "' where channel = 'WEIBO' and uid = '" + uid + "'";
+            bw.write(sql);
+            bw.newLine();
+        }
+        bw.close();
+        fw.close();
+    }
+
+    @Test
+    public void test131() {
+        List<String> list = null;
+
+        for(String str : list) {
+            System.out.println(str);
+        }
+    }
+
+
+    @Test
+    public void test133() {
+        File file = new File("/Users/huangjin/Documents/1416eZ4YPugjZh5R-VSVideo-Merged.mp4");
+        String contentType = new MimetypesFileTypeMap().getContentType(file);
+
+        System.out.println(contentType);
+    }
+
+    @Test
+    public void test135() {
+        Date date = DateUtil.parseDate("20191023");
+
+        System.out.println(date);
+    }
+
+    @Test
+    public void test137() {
+        String weiboText = "#未来演技派#@辣目洋子 转型做演员！着实期待！之前看过一些短片就觉得小姐姐演技不错！果然，期待作为演员洋子未来的发展！http://t.cn/Ai1NcvKU";
+
+        Pattern topicTagPattern = Pattern.compile("#([^#]{1,40})#");
+
+        Set<String> topicList = new LinkedHashSet<>();
+
+        Matcher matcher = topicTagPattern.matcher(weiboText);
+        while (matcher.find()){
+            String topicName = matcher.group(1);
+            topicList.add(topicName);
+        }
+        System.out.println(topicList);
+    }
+
+    @Test
+    public void test139() {
+        User user = new User();
+        user.setUsername("huangjin");
+
+        this.setUserName(user);
+        System.out.println(user.getUsername());
+    }
+
+    private void setUserName(User user) {
+        user.setUsername("fangfang");
+    }
+
+
+    @Test
+    public void test141() {
+        //开始时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DATE, 30);
+
+        Integer startMonth = calendar.get(Calendar.MONTH) + 1;
+        Integer startDate = calendar.get(Calendar.DATE);
+        String startTimeStr = startMonth + "月" + startDate + "日";
+
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 3);
+        Integer endMonth = calendar.get(Calendar.MONTH) + 1;
+        Integer endDate = calendar.get(Calendar.DATE) + 1;
+        String endTimeStr = endMonth + "月" + endDate + "日";
+
+        String winDesc = startTimeStr + "-" + endTimeStr;
+
+        System.out.println(winDesc);
+    }
+
+
+    @Test
+    public void test143() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ing");
+        sb.append("");
+
+        System.out.println(sb.length());
+    }
+
+    @Test
+    public void test145() {
+        String rule = "[{\"ruleCode\":\"hehe\",\"ruleInfo\":{\"start_time\":111,\"end_time\":222}},"
+            + "{\"ruleCode\":\"xixi\",\"ruleInfo\":{\"dayExp\":111,\"peopleExp\":222}}]";
+
+        List<JSONObject> list = JSON.parseArray(rule, JSONObject.class);
+
+        for(JSONObject jsonObject : list) {
+
+            for(Entry entry : jsonObject.entrySet()) {
+                System.out.println(entry.getKey());
+                System.out.println(entry.getValue());
+            }
+        }
+    }
+
+    @Test
+    public void test147() {
+        ForkJoinPool pool = ForkJoinPool.commonPool();
+
+        System.out.println(pool.getPoolSize());
+    }
+
+    @Test
+    public void test149() throws IOException {
+        List<String> list = IOUtils.readFile("/Users/huangjin/Downloads/test.json");
+        for(String item : list) {
+            if(!item.startsWith("{")) {
+                continue;
+            }
+            JSONObject jsonObject = JSONObject.parseObject(item);
+            System.out.println(item);
+        }
+    }
+
+    @Test
+    public void test151() throws IOException {
+        List<String> list = IOUtils.readFile("/Users/huangjin/Downloads/test.json");
+        for(String item : list) {
+            if(!item.startsWith("{")) {
+                continue;
+            }
+            JSONObject jsonObject = JSONObject.parseObject(item);
+            System.out.println(item);
+        }
+    }
+
+    @Test
+    public void test153() throws IOException {
+        Long l = 3210873l;
+        Double d = l.doubleValue();
+
+        System.out.println(d/(1000*1000));
+    }
+
+    @Test
+    public void test155() {
+        String str = "成功. retMsg={\"data\":{\"description\":\"\",\"error_code\":0,"
+            + "\"item_id\":\"@9VwVhfbHX54gbHCuNN0xQs780mztOvmAPZR1oQKlKVEaZvf460zdRmYqig357zEBK+218yZD2CKkhoXn4WpTyg"
+            + "==\"},\"extra\":{\"logid\":\"202002181715590100140471940412AEBC\",\"now\":1582017359979}}";
+
+        String str1 = str.substring(str.indexOf("retMsg=") + 7);
+
+        System.out.println(str1);
+    }
+
+    @Test
+    public void test157() {
+        String json = "{\"data\":{\"description\":\"\",\"error_code\":0,\"list\":[{\"cover\":\"https://p9-dy.byteimg"
+            + ".com/img/tos-cn-p-0015/defd31dd368a468da5a9b05af25e91e7_1581846673~c5_300x400"
+            + ".jpeg?from=2563711402_large\",\"create_time\":1581846667,\"is_reviewed\":true,\"is_top\":false,"
+            + "\"item_id\":\"@9VwVhfbHX54gbHCuNN0xQs780mzqNP+LPpZyqAqjL1QUbvL760zdRmYqig357zEBEu9pgEGtvxzC4CdxD1E7Wg"
+            + "==\",\"share_url\":\"https://www.iesdouyin"
+            + ".com/share/video"
+            +
+            "/QDlWd1ZoZmJIWDU0Z2JIQ3VOTjB4UXM3ODBtenFOUCtMUHBaeXFBcWpMMVFVYnZMNzYwemRSbVlxaWczNTd6RUJFdTlwZ0VHdHZ4ekM0Q2R4RDFFN1dnPT0=/?region=CN&mid=6793964200273300231&u_code=gh7me18g&titleType=title\",\"statistics\":{\"comment_count\":19,\"digg_count\":419,\"download_count\":0,\"forward_count\":2,\"play_count\":23640,\"share_count\":3},\"title\":\"#王牌对王牌 TFBOYS变身呆萌波斯猫，老阿姨们尖叫不已\"},{\"cover\":\"https://p3-dy.byteimg.com/img/tos-cn-p-0015/d15da1624e784a9cac2fdc82db303fa9_1581309908~c5_300x400.jpeg?from=2563711402_large\",\"create_time\":1581309903,\"is_reviewed\":true,\"is_top\":false,\"item_id\":\"@9VwVhfbHX54gbHCuNN0xQs780mzoO/+GOpNzrA+uKlcaafL660zdRmYqig357zEB5Hqiu6ESE+3J8HTUgIQ/CQ==\",\"share_url\":\"https://www.iesdouyin.com/share/video/QDlWd1ZoZmJIWDU0Z2JIQ3VOTjB4UXM3ODBtem9PLytHT3BOenJBK3VLbGNhYWZMNjYwemRSbVlxaWczNTd6RUI1SHFpdTZFU0UrM0o4SFRVZ0lRL0NRPT0=/?region=CN&mid=6791659247018101517&u_code=gh7me18g&titleType=title\",\"statistics\":{\"comment_count\":165,\"digg_count\":3719,\"download_count\":38,\"forward_count\":2,\"play_count\":184075,\"share_count\":26},\"title\":\"钟丽缇隔空大喊要给张伦硕生宝宝，弱弱的问一句这么大岁数还能生吗？\"}]},\"extra\":{\"logid\":\"2020021813140301000806508523D6F4E1\",\"now\":1582002844078}}";
+
+        ReadContext readContext = JsonPath.parse(json);
+
+        Integer errorCode = JsonConvertUtil.getJsonPathInt(readContext.read("$.data.error_code"));
+        System.out.println(errorCode);
+
+        int size = readContext.read("$.data.list.length()");
+        System.out.println(size);
+
+        String itemId = readContext.read("$.data.list[" + 1 + "].item_id");
+        System.out.println(itemId);
+
+        Integer commentCount = JsonConvertUtil.getJsonPathInt(readContext.read("$.data.list[" + 1 + "].statistics.comment_count"));
+        System.out.println(commentCount);
+    }
+
+
+    @Test
+    public void test159() {
+        String json = "[{\"ruleCode\":\"MAX_EXP\",\"ruleInfo\":{\"userType\":\"alipayId\",\"dayMaxExp\":1,"
+            + "\"peopleMaxExp\":10000}},{\"ruleCode\":\"MEGA_PEOPLE\",\"ruleInfo\":{\"userType\":\"alipayId\","
+            + "\"megaPeopleIds\":\"41634\"}},{\"ruleCode\":\"NOT_LOGIN\",\"ruleInfo\":{\"userType\":\"ytid\"}},"
+            + "{\"ruleCode\":\"CLIENT_TYPE\",\"ruleInfo\":{\"client\":\"ANDROID\"}}]";
+
+        JSONArray jsonArray = JSONArray.parseArray(json);
+
+        System.out.println(jsonArray);
+
+        List<JSONObject> ruleDetail = Lists.newArrayList();
+        if(!jsonArray.isEmpty()) {
+            for(Object object : jsonArray) {
+                ruleDetail.add((JSONObject)object);
+            }
+        }
+
+        System.out.println(ruleDetail);
+    }
+
+    @Test
+    public void test161() {
+        String str = "12313213";
+        System.out.println(NumberUtils.isDigits(str));
+
+        String str1 = "12313213aa";
+        System.out.println(NumberUtils.isDigits(str1));
+    }
+
+    @Test
+    public void test163() throws ParseException {
+        String cron = "* * 10-15 * * ? ";
+        System.out.println(filterWithCronTime(cron));//true，我当前时间为15:36，
+        System.out.println(filterWithCronTime(cron));//false，我当前时间为15:36，
+    }
+
+    /**
+     * 校验在当前时间是否满足时间规则表达式
+     * @param cron
+     * @return
+     * @throws ParseException
+     */
+    private  Boolean filterWithCronTime(String cron) throws ParseException {
+        if(StringUtils.isBlank(cron)){
+            return false;
+        }
+        CronExpression exp = new CronExpression(cron);
+        Boolean inCron = exp.isSatisfiedBy(new Date());
+        return inCron;
+    }
 }
