@@ -45,6 +45,11 @@ public class DateUtil {
     public static final String MONTH_PATTERN = "yyyy-MM";
 
     /**
+     * yyyyMM
+     */
+    public static final String MONTH_PATTERN_CUT = "yyyyMM";
+
+    /**
      * yyyy-MM-dd
      */
     public static final String DAY_PATTERN = "yyyy-MM-dd";
@@ -103,6 +108,19 @@ public class DateUtil {
      * </pre>
      */
     public static final String DATE_TIME_FULL = "yyyy-MM-dd HH:mm:ss.SSS";
+
+
+
+    public static final String DATE_TIME_ISO8601 = "yyyy-MM-dd'T'HH:mm:ssZ";
+
+
+    public static final String DATE_TIME_FULL2 = "yyyyMMddHHmmssSSS";
+
+    /**
+     * YYMMDDHHMM
+     */
+    public static final String SPECIAL_MINITE_PATTERN = "yyMMddHHmm";
+
 
     /**
      * Add specified number of days to the given date.

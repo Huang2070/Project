@@ -21,6 +21,12 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String password, Date date) {
+        this.username = username;
+        this.password = password;
+        this.date = date;
+    }
+
     public int getId() {
         return id;
     }

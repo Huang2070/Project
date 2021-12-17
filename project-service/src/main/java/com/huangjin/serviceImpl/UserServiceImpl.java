@@ -1,5 +1,6 @@
 package com.huangjin.serviceImpl;
 
+import com.google.common.collect.Lists;
 import com.huangjin.dao.UserMapper;
 import com.huangjin.domain.User;
 import com.huangjin.service.UserService;
@@ -16,11 +17,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public UserServiceImpl() {
-    }
 
+    @Override
     public List<User> selectList(User user) {
         this.logger.info("查询用户");
-        return this.userMapper.selectList(user);
+        //return this.userMapper.selectList(user);
+
+        return Lists.newArrayList(new User("hehe", "password"));
     }
 }

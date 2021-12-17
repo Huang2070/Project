@@ -1,0 +1,38 @@
+package com.huangjin.alibaba.aliyun;
+
+
+/**
+ * @author: wb-wb606477
+ * @date: 2021/1/26 13:06
+ * @descript:
+ */
+public class Test {
+    public static void main(String[] args) {
+        /**
+         场景方私钥, 由场景方自己生产秘钥对。把公钥给到阿里云方
+         */
+        String privateKey4Scene=
+            //"MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDElPI/HDE8xwETRcvvXjUbqoOayAmi7Vi5GXOREi+2UnIjK6dJoHwAwTds+4hPdY9n41RTa0NzJsqRC3X2EJs0xyl4fvsZbwINaX/kfFBag6970b/8YQc/dKVakAvIbXAnkTpiMp9oTAFftRdATpbsDj45J8HRGyEXrct3aXEYhL+NygI2cRF3OxMxLq2ecPYVHPT1zzkDaWF2409HEVew5aK1jKEaoSkZqNXFtcTujnOMO+7/OO9Htl3yaiBUBinmXszIdqdBYdksUbz0gqbS9RImoqxW4zf2j32DWs/+KDKqS7h3t5b3B+Dd+jBpVW9r8LWiFYs4NEZfB3aaMZeVAgMBAAECggEAJfWY/YTFITZQR9dvdM5dNPVtKkM8USDBxCRdA4NegTdUYOQ6DmaV61NkD4BWpvlNcsMb8mvA/4hbDz0GTziPr9ZRdLoYZKXh4JMhpg43OfM5vJAZIXPfAWrVzzIHhHFVed56RqH91BbxIPkH/1vtmrF5ZHH/5A/4COl/Y5SRySjqKrdu6BG/VUrjfbyDBhAKQriSqp+gxECEdJi9ZJNPZBSREaOHzjN2gY/DWEG1XDrwlpRYbTOrXupD5g20OndAf/B610R9gkkRC3A6u4lP5YGSxkViqbPlbUjoSg0TtasN5fEsyx1hRzCLKb4q2Zj+5sa2Oav0UVxUewzZLdXo1QKBgQDyYqEXI0nFKgTgP5J7snCypEKheYstVTpXKN0D0pVs4MKevTa6QN5iCC73EIZVa5kXeHsaHCkhVJe7YQSrkTp0Cble/1O0lyY61HTWaCsrQfWnMme4CevzG87a+wmiZ2UaGdLBdtvFkFNpGzx9Vy/wf7iB/cR2nTuqd9RNCxmy2wKBgQDPn7AY3QwpoMYdFWpqeJJ5J3HQf2U2q3eg3jv7r2CMQQlcpol090UPL0nT3VGhcDhcwSOCYaI2KJKNR8paetS2i7rgTt1iZSitZ1pWj9H7UTSnvuxYWi84XpRCv4422+j+ctXXnz/dCqp3rIr+RHWiNP3cXZJcNc/ubi6v4xASTwKBgAYRtCjpKEq4j6Cx1tAkGrBObqCuc26yKKDQFCCpYDZ2tkjVQg6N20OnIs3q6wIujInK6YIw3FLKVHZLqptFKqqHJ84aJJVsB3gHo9lOiG4v25/RIkm4beELfDV9fbNEVYK+zMktWblrsLr8BJq62Sdze0I+AXJa44iUMYuwUHdrAoGBAMQV9dNVmPILxG+dVTafDv7bUPNwDeAXCtFkcdQe6xkrJzNYmYNdMNzJdXlhkYHdoW2Afw/ZM8DgiqBhx+uyDAknaGQGN7GBBmzWqowMIm2vYQJ4H3DGI8iiEnYDwcVv5dnCDNIqtb8GHr8NtuuzLkH2uDcSLHNn4yw05WT6FqijAoGAP+IaKYXRVASm3Qlyjt3RcFo5l+ODZGRtLsssDuqxYTKbL/49hxfSMhIWTuzYawyQgV6vAaq/SzWHQ3OlE7uv519fSB6MZGlWOC5zHuF/atqWWOKp3U9EORDVTWSz8uQ8+edklLLpKvwsG0GXjWqLyWzhjBfRyrAY56CUA/5YWTA=";
+            "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCY__whPh3zI-NhXMiA2haHRJA8fwJkDE0oKCQHSfquYwOALv3CVWBZ964j1eHpLvu1G6aLjDq9jyc2wxjG0odo4XFUcfJBQstsh9fbUMv_CmuXLURePDcv53sFUSIB_50DJMko4z7B1wCEOxTPKI8g1SHIUVZwCghV1z2ODCCh_o8n2sKJj4xPEIAlrBHiPGavlxS2_6Up5XfnEtMZw6K9dzOPL-8PDkmlDx28ol6yBvRti6DK5TpjPeyhPzVgqxhKeWy5mf2VITs_eDuVJLkWbLQFwpYbgdunuWUi72nSV2u0JfNh5fUi3VPoFZOCzEKxdLR-928QyEgMYeFkiDynAgMBAAECggEAVa49JuyfXxMA-fw4uJfpN9U4pPhHgXm2F7_q9T4DqXb_deBa8WJYc-mVVrInMivCf9i9OrbMCm3Jewxkqqspc52UlsK89LkQLHYidspXgzr1p5KND-zOxv_tz7twvQfFiQYntMMV2P2rZ2GitKQ1CyDwKzsJmfK0WkYQTaUS_UQp2nxyECUyM420U-ka0nR4jKLWeJkkDPMU6wtvf4q_-ea60AdgQgv1d4GNyvAp1EXdCi9ZNF9GU6EwrPKtW0jINW1ICCxdfQJvY33Ow2Ehh3fM_OFJOml4QkT5xExgiOdqkAE_KBXy5wnsbv-DzXDsyg0j7etyw6AJYGz8oLbBiQKBgQD8uw4jid4504iEl40xwN-Rrek-JQRi3QXl7Cfm1OUWykk4g1Dj-DE6yVv3WqWAPT5UqRgmnkwtuLWLPF3yAdw8Dbr6GyVQRHpJItwUJZTNWz4lFXnMmoiJcOy66DOOyO2iR2uwMxVtrByQKrMfLcWt70QTcQbbb4XPep7b9xpt5QKBgQCa-qkc8MG7jZOwIIksfCFG61IQRhRA_sqBe5MJmaqJCy046znBQoqOyB66SlBfKwk_eSSnXnmLUSz7K5blwyO9N3ssw-kIvM3y4vNtU6z8y6e61-IDMtFj0k4MnvQngT--VopgPx8-zzNqAp8kDADaTy6SULReQvDzZqUf74W3mwKBgQDCsH6l1fFBbrk-G1mDuGcB3I1PeEi2uDlw88mRQvPv6IkbZd2MoIecF74nAMd50LQRl-mo5k0c86u2xRxB8Djuck1Vmk_WU8o4SQhs5L6Kq_1lp_OaMHl6F2nmWjZNim-1kXtd0xxwziN608oE_MfJxAYXS_zSUkksmfOC1AqiGQKBgBpwIGFbgPEp2cP2CPCZzGN4yWsVSWc9D_a-yfqdSEZQrcpD9npNi62H3hYRj1xszwsQ83vJ1ho6It5GNVvEylgBGvYsBZkD_G4u4TAJUj1d0KNDKL868BWDTuVASI5ksicaREje-8mPN0oiYFuZ4JtdXqh_NAXQjaI4JHsqNTl5AoGBAJBwjmifEEK0XZTfmjdpnPxwKag0SB7w-mGW46t_ASb6yeSItsI9saNYqfWyFmZKIMOhSLa38871PEDJUJG2mVtoj3LZh0V8A3Os6QgYc_NignF7VL32go4j8Ue92PJjnE3Sdr32di0-YluMcZjfcU8KfFBXOXc6tTVEaq9uqrTR";
+
+        /**
+         阿里云公钥。向阿里云索要
+         */
+        String publicKey4Aliyun =
+            //"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp2fI0IoGEa8kmzHA9oeIS3axPfx7fb7MtSGiWAtDWDyUJYzQofexRk3UiT4NLhmNNaDLqNlvF5MtB5EBKSOZrE1r4YsV2XBVuHJSbB0hUH1qnJe1Reodgg1w9iwRe1/KakFxZdv+rG4TunGejlC0ZGsNJa2iU6pc8p+mrNYZ9iCCBcPUAK2YsTPCC6/K+bxOVUoe1TWnuZH4KnUkDbrfaUhzczQmLLzCOCz49o6hrZimrDOIoNPCnSjZuSlrDCf/bOQU3JA3PB1yUjH0owLJ5Wuf1YHpRsi+vMS5Rt1qnoGePnxzozjpIex3dScoeXhkhrh+CsVLoMm6BtHQ4BdWEQIDAQAB";
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsuvPMt_sPZSocbf4QgQoHw4qXUDKkyg7owErBFNg-yRKFywP2Re7nxEphONX-P-BN5G7bD1gWQ7OYUgFTxgGUSEjD3ubVEFYSCVdF2Kxbd5eOkks1Fv8L4RmlNMjsl1Jre5m8CcKeRJT3_LdhJfcQ4IrYX_j15DsiF3wjtfdVVVVSXGgolv3L_vIcW1zl9qNIZ7fuPiUE2boCFnQ2P8quoorH8aWJeDyuzzaRMcZdXUAgBxEpti2qgjOCsmX88aOZ4Oe6a9K5uUB6msq06PO9mA6Po02VFIbrUci9qTPzPr323QtImVFYhvUIuonaE1Us4noydRItP1NKE0vDEEurQIDAQAB";
+
+        /**
+         * 向阿里云索要地址
+         * @子客 @李贺
+         */
+        String url4Aliyun = "http://127.0.0.1:7090";
+
+
+        String url = InitLinkBuilder.newInstance(url4Aliyun, publicKey4Aliyun, privateKey4Scene)
+            .addParam("uid", "123456782987")
+            .addParam("scene", "YOUKU")
+            .build();
+        System.out.println(url);
+    }
+}
