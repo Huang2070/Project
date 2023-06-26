@@ -1,12 +1,12 @@
-package com.huangjin.alibaba.aliyun;
+package com.huangjin.util;
 
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -15,10 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.crypto.Cipher;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author wb-fjx587232
  */
-public class RSAUtil {
+public class RSAUtilAliyun {
     /**
      * RSA最大加密明文大小
      */
@@ -161,9 +166,5 @@ public class RSAUtil {
         keyPairMap.put("publicKey", publicKeyStr);
         keyPairMap.put("privateKey", privateKeyStr);
         return keyPairMap;
-    }
-
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        System.out.println(initRSAKey());
     }
 }

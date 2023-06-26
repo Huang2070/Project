@@ -16,11 +16,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -29,24 +33,39 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.alibaba.fastjson.JSON;
@@ -54,6 +73,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -61,6 +82,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.huangjin.domain.Aaa;
 import com.huangjin.domain.AaaCopy;
 import com.huangjin.domain.Bbb;
@@ -72,33 +94,47 @@ import com.huangjin.domain.User;
 import com.huangjin.helper.SpringContextHolder;
 import com.huangjin.state.DistributeContext;
 import com.huangjin.state.DistributeStateConfigFinish;
+import com.huangjin.testcms.PlatformEnum;
+import com.huangjin.util.AEScbcUtil;
+import com.huangjin.util.AesUtil;
+import com.huangjin.util.AesUtilWkUtils;
+import com.huangjin.util.AesUtilZGH;
+import com.huangjin.util.AsciiSortUtil;
 import com.huangjin.util.ConvertUtil;
 import com.huangjin.util.DateUtil;
 import com.huangjin.util.DownUtils;
 import com.huangjin.util.IOUtils;
 import com.huangjin.util.JsonConvertUtil;
 import com.huangjin.util.Md5Util;
+import com.huangjin.util.RSAUtil;
 import com.huangjin.util.RSAUtils;
 import com.huangjin.util.RsaUtil4Aliyun;
+import com.huangjin.util.SignUtilForCuccWk;
+import com.huangjin.util.SplitterUtils;
+import com.huangjin.util.SqlSecurityUtils;
 import com.huangjin.util.TimeUtil;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.quartz.CronExpression;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
@@ -111,6 +147,7 @@ import static java.util.regex.Pattern.compile;
 @Slf4j
 @Component
 public class TestTest {
+
     public static void main(String[] args) {
         try {
             BufferedInputStream in = new BufferedInputStream(System.in);
@@ -380,20 +417,51 @@ public class TestTest {
 
     @Test
     public void test20() {
-        User use = new User();
-        System.out.println(use.getId() == 0);
+        Map<String, Object> params = Maps.newHashMap();
+        params.put("app_id", "123");
+        params.put("action", "hellobike.activity.bikecard");
+        params.put("utc_timestamp", System.currentTimeMillis() + "");
+        params.put("version", "1.0");
+
+        Map<String, String> bizContent = Maps.newHashMap();
+        bizContent.put("transactionId", "321");
+        bizContent.put("mobilePhone", "mobile");
+        bizContent.put("activityId", "activity");
+        params.put("biz_content", bizContent);
+
+        String sortedStr = AsciiSortUtil.marshal(params);
+        JSONObject sortedJson = JSON.parseObject(sortedStr, Feature.OrderedField);
+
+        StringBuilder signTemp = new StringBuilder();
+        for (Entry<String, Object> entry : sortedJson.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            //sign参数不参与签名
+            if ("sign".equals(key)) {
+                continue;
+            }
+            //值为空，则不加入签名
+            if (Objects.isNull(value)) {
+                continue;
+            }
+            signTemp.append(key).append("=").append(value).append("&");
+        }
+        String md5Content = signTemp.toString();
+        //如果最后一个是 & 则去掉
+        if (md5Content.endsWith("&")) {
+            md5Content = md5Content.substring(0, md5Content.length() - 1);
+        }
+
+        System.out.println(md5Content);
     }
 
     @Test
     public void test21() {
-        List<Integer> list1 = Lists.newArrayList(1,2,3,4,5);
-
-        List<Integer> list2 = Lists.newArrayList(1,2,3,4,5);
-
-        list1.removeAll(list2);
-
-        System.out.println(list1);
-        System.out.println(list2);
+        String str = "02048736202MRPxbsupply-2420460274620246152";
+        if(str.length() > 32) {
+            str = str.substring(str.length()-32);
+        }
+        System.out.println(str);
     }
 
     @Test
@@ -417,21 +485,17 @@ public class TestTest {
     }
 
     @Test
-    public void test23() {
-        String a = "1";
-        String b = "2";
-        Set<String> aaa = Sets.newHashSet();
-        System.out.println(aaa.add(a));
-        System.out.println(aaa.add(b));
-        System.out.println(aaa.add(a));
+    public void test23() throws Exception {
+        String str = "Anoctamin-9 (Transmembrane protein 16J) (Tumor protein p53-inducible protein 5) (p53-induced gene 5 protein)";
+        int firstDelChar = str.indexOf("(");
+        str = str.substring(0, firstDelChar);
+        System.out.println(str);
     }
 
     @Test
-    public void test24() {
-        long timeMills = System.currentTimeMillis();
-        System.out.println(String.valueOf(timeMills));
-        System.out.println(RandomUtils.nextInt(1, 1000));
-
+    public void test24() throws Exception {
+        String cipherText = AEScbcUtil.aesEncryptNew("{\"app_id\":9999,\"phone\":\"00016109870\"}", "0a59e7325e4f524f897761fc08b6c1b0", "0a59e7325e4f524f");
+        System.out.println(cipherText);
     }
 
     @Test
@@ -552,9 +616,24 @@ public class TestTest {
 
     @Test
     public void test31() {
-        Object ddd = 2018435.0;
+        String str = "{\"ruleFeatureGroupList\":[{\"ruleFeatureList\":[{\"key\":\"wz_utdid_user_played_times\","
+            + "\"featureText\":\"满足观看时长后从播放页返回\",\"featureType\":2,\"featureOperator\":1,\"operatorText\":\"等于\","
+        + "\"featureValue\":\"4\",\"valueText\":\"4\",\"valueLabelMap\":{\"4\":\"4\"}},"
+        + "{\"key\":\"wz_utdid_vdo_cnt_show_N\",\"featureType\":2,\"featureText\":\"非付费剧观看集数\",\"featureOperator\":1,"
+        + "\"operatorText\":\"等于\",\"featureValue\":\"1\",\"valueText\":\"1\",\"valueLabelMap\":{\"1\":\"1\"}}],"
+            + "\"operator\":2}],\"ruleFeatureList\":[{\"key\":\"com.youku.ikumac\",\"featureType\":2,"
+        + "\"featureId\":\"74\",\"featureText\":\"优酷pc客户端_mac\",\"featureOperator\":5,\"operatorText\":\"大于等于\","
+        + "\"featureValue\":\"1.7.6\",\"valueText\":\"1.7.6\",\"valueLabelMap\":{\"1.7.6\":\"1.7.6\"}}],\"operator\":1}";
 
-        System.out.println(Math.round(Double.parseDouble(ddd.toString())));
+        int index = 1;
+        while(true) {
+            index = str.indexOf("featureText", index);
+            if(index < 0) {
+                break;
+            }
+             index = index + 14;
+            System.out.println(str.substring(index, str.indexOf("\"", index)));
+        }
     }
 
     @Test
@@ -1417,11 +1496,14 @@ public class TestTest {
 
     @Test
     public void test161() {
-        String str = "12313213";
-        System.out.println(NumberUtils.isDigits(str));
+        //String tag = "618_youku_shoutao_test_H5_activateSucc";
 
-        String str1 = "12313213aa";
-        System.out.println(NumberUtils.isDigits(str1));
+        String tag = "10011";
+        System.out.println(tag.substring(0, tag.indexOf("_")));
+
+        System.out.println(tag.substring(tag.indexOf("_") + 1, tag.lastIndexOf("_")));
+
+        System.out.println(tag.substring(tag.lastIndexOf("_") + 1));
     }
 
     @Test
@@ -2342,98 +2424,89 @@ public class TestTest {
 
     @Test
     public void test205() {
-
-        String resp = "{\"code\":\"100000\",\"msg\":\"success\",\"data\":{\"fans\":{\"show\":\"1318457\","
-            + "\"yAxis\":[1307361,1307433,1307503,1307606,1307668,1307717,1307793,1308009,1308271,1308731,1309044,"
-            + "1309245,1309929,1310746,1311971,1312395,1312815,1313519,1314082,1314616,1314743,1314972,1315524,"
-            + "1315765,1316006,1316156,1316770,1317170,1317950,1318347,1318457]},\"post\":{\"show\":181,\"yAxis\":[5,"
-            + "5,10,6,6,5,5,5,5,6,5,5,6,7,6,7,7,6,8,5,5,7,6,5,5,6,5,5,6,5,6]},\"read\":{\"show\":5738991,"
-            + "\"yAxis\":[108616,92754,82412,70183,159587,59994,56086,61914,52691,52044,78598,241073,161922,306003,"
-            + "284241,325715,145527,230451,289089,369655,802535,93569,303408,103769,226023,96167,190365,187004,"
-            + "221469,121505,164622]},\"beinter\":{\"show\":6615,\"yAxis\":[198,51,83,65,84,54,47,39,40,21,65,33,150,"
-            + "743,2730,511,440,252,102,25,50,84,147,32,76,21,118,33,41,55,225]},\"video\":{\"show\":3,\"yAxis\":[0,"
-            + "0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},\"videoplay\":{\"show\":15356,"
-            + "\"yAxis\":[405,397,2560,825,801,633,591,490,374,443,445,344,1219,341,298,300,365,368,286,331,268,305,"
-            + "301,345,274,305,299,262,273,208,700]},\"fentiao\":{\"show\":\"0.00\",\"yAxis\":[\"0.00\",\"0.00\",\"0"
-            + ".00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0"
-            + ".00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0"
-            + ".00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\",\"0.00\"]},\"officialrepost\":{\"show\":0,"
-            + "\"yAxis\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"
-            + "\"videostream\":{\"show\":0,\"yAxis\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"
-            + "0]},\"xAxis\":[\"10月1日\",\"10月2日\",\"10月3日\",\"10月4日\",\"10月5日\",\"10月6日\",\"10月7日\",\"10月8日\","
-            + "\"10月9日\",\"10月10日\",\"10月11日\",\"10月12日\",\"10月13日\",\"10月14日\",\"10月15日\",\"10月16日\",\"10月17日\","
-            + "\"10月18日\",\"10月19日\",\"10月20日\",\"10月21日\",\"10月22日\",\"10月23日\",\"10月24日\",\"10月25日\",\"10月26日\","
-            + "\"10月27日\",\"10月28日\",\"10月29日\",\"10月30日\",\"10月31日\"],\"yesterday\":{\"fans\":1321051,\"post\":6,"
-            + "\"read\":78325,\"beinter\":244,\"video\":0,\"videoplay\":290,\"fentiao\":0,\"officialrepost\":0,"
-            + "\"videostream\":0},\"total\":\"31\"}}";
-
-        ReadContext readContext = JsonPath.parse(resp);
-
-        String rowTime = ConvertUtil.readJsonPath(readContext,"$.data.xAxis","", String.class);
-        List<String> list = JSON.parseArray(rowTime, String.class);
-
-        for(String item : list) {
-            System.out.println(item);
-        }
-
-        String play = ConvertUtil.readJsonPath(readContext,"$.data.videoplay.yAxis","", String.class);
-        List<Integer> playList = JSON.parseArray(play, Integer.class);
-
-        for(Integer item : playList) {
-            System.out.println(item);
-        }
+        Map<String, Object> param = Maps.newHashMap();
+        param.put("orderId", "abc");
+        System.out.println(param.getOrDefault("orderId", "").toString());
     }
 
 
     @Test
     public void test207() throws ParseException {
-        String date = "2020年10月1日";
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
-
-        Date d = formatter.parse(date);
-        System.out.println(DateUtil.formatDate(d));
-    }
-
-    @Test
-    public void test209() throws ParseException {
-
-        Date date = new Date((long)1606197813*1000);
-        System.out.println(date);
-    }
-
-    @Test
-    public void test211() throws ParseException {
-
-        String str = "abc";
-        ReadContext readContext = JsonPath.parse(str);
-
-        Object uidobj = readContext.read("$.media.id");
-        System.out.println(uidobj);
+        String hsfParamInfo = "{\"ispType\":\"java.lang.String\", \"bizType\":\"java.lang.String\", "
+            + "\"ytid\":\"java.lang.Long\", \"param\":\"java.util.Map\"}";
 
 
-        String str2 = "测试公司";
-        System.out.println(str2.contains("测试"));
+        JSONObject jsonObject = JSON.parseObject(hsfParamInfo, Feature.OrderedField);
+
+        for(Entry<String, Object> entry : jsonObject.entrySet()) {
+            System.out.println(entry.getKey() + "-" + entry.getValue());
+        }
 
     }
 
     @Test
-    public void test213() {
-        System.out.println(Math.floorDiv(1920, 600));
+    public void test209() throws ParseException, IOException {
 
-        System.out.println(new Byte("1"));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("b1", "2");
+        jsonObject.put("a3", 1);
+        jsonObject.put("d2", 3);
+
+        JSONObject subJson = new JSONObject();
+        subJson.put("cb", "2");
+        subJson.put("ca", "2");
+        jsonObject.put("c9", subJson);
+
+        System.out.println(jsonObject.toJSONString());
+
+        String ordered = AsciiSortUtil.marshal(jsonObject);
+        System.out.println(ordered);
+
+        //获取计算签名用的字符串
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(ordered);
+        System.out.println(jsonNodeToSignString(jsonNode));
+
     }
 
+    @Test
+    public void test211() throws ParseException, URISyntaxException {
+        String url = "www.baidu.com?a=1&b=2";
+
+        URIBuilder builder = new URIBuilder(url);
+        List<NameValuePair> params = builder.getQueryParams();
+        System.out.println(JSON.toJSONString(params));
+        System.out.println(builder.getScheme());
+        params.removeIf(item -> "a".equals(item.getName()));
+        System.out.println(builder.toString());
+
+        StringBuilder sb = new StringBuilder("1234567");
+        System.out.println(sb.deleteCharAt(sb.length() - 1));
+    }
 
     @Test
-    public void test215() {
-        List<Long> ids = Lists.newArrayList();
-        ids.add(1L);
-        ids.add(2L);
-        ids.add(3L);
+    public void test213()
+        throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+        InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        String plainText = "{\"phone\":\"18513483066\",\"nonce\":\"3f78e7b79e584bbdbad2eefdf519796d\","
+            + "\"timestamp\":1681201677}";
+        String key = "ncotT4h8OevBoqIY";
 
-        ids = ids.parallelStream().filter(item -> item == 1L).collect(Collectors.toList());
+        System.out.println(AesUtilZGH.Encrypt(plainText, key, key));
+        System.out.println(AesUtilWkUtils.encrypt(plainText, key));
 
-        System.out.println(ids);
+
+        String miwen = "1j3ZA7ZjOhgwBu8w38uoaA";
+        System.out.println(AesUtilWkUtils.decrypt(miwen, key));
+    }
+
+    private ApplicationContext applicationContext;
+    @Test
+    public void test215() throws URISyntaxException {
+
+        Long monthLastTimeMillis = DateUtil.getMonthLastTimeMillis(DateUtil.getMonthWithYear(new Date()));
+
+        System.out.println(monthLastTimeMillis);
     }
 
     private static String CHANNEL = "BAIDU_BAIJIAHAO";
@@ -2570,11 +2643,19 @@ public class TestTest {
 
     @Test
     public void test229() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("AAA", "AAA");
-        jsonObject.put("BBB", Lists.newArrayList("B"));
+        String str = "{\"film_account_phone_query_response\":{\"result\":{\"account_list\":{\"model\":[{\"mix_user_id"
+            + "\":\"AAH9qNnmACSqk_rfpVK1l8Ql\",\"user_nick\":\"t***2\"},{\"mix_user_id\":\"AAFRqNnmACSqk_jfpVCdFDUn\","
+        + "\"user_nick\":\"h***9\"}]},\"return_code\":\"0\"},\"request_id\":\"16moryoirjq50\"}}";
 
-        System.out.println(jsonObject);
+        String str2 = "{\"film_account_phone_query_response\":{\"result\":{\"account_list\":{},"
+            + "\"return_code\":\"0\"},\"request_id\":\"16mbm140pc5ho\"}}";
+
+        ReadContext readContext = JsonPath.parse(str);
+        String tppAcountList = ConvertUtil.getJsonPathString(readContext.read("$.film_account_phone_query_response.result.account_list.model[0].mix_user_id"));
+
+
+
+        System.out.println(tppAcountList);
     }
 
     @Test
@@ -2687,142 +2768,45 @@ public class TestTest {
     }
 
     @Test
-    public void test247() {
-        String secretKey = "fde7tfR0CZxXtMZOUsbtCjE3iWyL7a1Jb1RmU9StTsWecuZS36Zcn0ojVdDqdmXF";
+    public void test247() throws NoSuchAlgorithmException {
 
-        String paramStr = "{\"source\":\"1\",\"version\":\"2.0\",\"identity_id\":\"CMV14301020\","
-            + "\"data\":{\"discount\":\"\",\"finalFee\":\"135.0\",\"itemId\":\"11406760\",\"orderId\":\"A16110114\","
-            + "\"phone\":\"17826807543\",\"price\":\"130.0\",\"quantity\":\"1\",\"title\":\"测试ql\"}}";
+        String jsonStr = "{\"code\":\"0\",\"message\":\"成功\","
+            + "\"result\":\"{\\\"mbrMasterPrivDetail\\\":[{\\\"mbrPrivList\\\":[{\\\"prodName\\\":\\\"铂金1GB\\\","
+        + "\\\"prodNo\\\":\\\"100737\\\",\\\"prodStatus\\\":0},{\\\"prodName\\\":\\\"铂金\\\","
+        + "\\\"prodNo\\\":\\\"100732\\\",\\\"prodStatus\\\":0}],\\\"mbrSource\\\":\\\"PLATINUM\\\"}]}\","
+        + "\"status\":\"ok\"}";
 
+        ReadContext readContext = JsonPath.parse(jsonStr);
+        String resultData = ConvertUtil.getJsonPathString(readContext.read("$.result"));
 
-        String setCodeStr = "{\"data\":{\"virtualCodes\":[{\"vcodePass\":\"CMV14301020_1638856920586yk\","
-            + "\"vcode\":\"CMV14301020_A16110114yk\"}],\"itemId\":\"11406760\",\"orderId\":\"A16110114\"},"
-            + "\"identity_id\":\"CMV14301020\",\"source\":\"1\",\"version\":\"2.0\"}";
+        JSONObject resultDataJson = JSONObject.parseObject(resultData);
 
-        //加密
-        char[] arrayCh = paramStr.toCharArray();
-        Arrays.sort(arrayCh);
-        String sortParamStr = new String(arrayCh);
-        System.out.println(sortParamStr);
+        JSONArray mbrMasterPrivDetail = resultDataJson.getJSONArray("mbrMasterPrivDetail");
 
+        for(Object jsonObject : mbrMasterPrivDetail) {
+            JSONObject privDetailItem = (JSONObject)jsonObject;
 
-        String md5Str = secretKey + sortParamStr;
-        String sign = StringUtils.lowerCase(Md5Util.MD5(md5Str));
-        System.out.println(sign);
+            String mbrSource = privDetailItem.get("mbrSource").toString();
+            System.out.println(mbrSource);
 
+            JSONArray mbrPrivList = privDetailItem.getJSONArray("mbrPrivList");
 
-        String reqStr = sign + paramStr;
-        String base64Req = new String(Base64.encodeBase64(reqStr.getBytes()));
-        System.out.println(base64Req);
+            for(Object object : mbrPrivList) {
+                JSONObject mbrPrivItem = (JSONObject)object;
 
+                System.out.println(mbrPrivItem.get("prodName"));
+                System.out.println(mbrPrivItem.get("prodNo"));
+                System.out.println(mbrPrivItem.get("prodStatus"));
+            }
+        }
 
-
-        //解密
-        base64Req =
-            "NDFhOGQzNjA4ZDUxNGVjOTdjNjA5YzdkZjM3NWY4MjV7ImRhdGEiOnsiY2hhbm5lbE9yZGVySWQiOiI1MDIxMTIwNjIyMTI1NDQwNDkzOSIsImNoYW5uZWxTdWJPcmRlcklkIjoiMjAyMTEyMDYyMjE2MjYzN\n"
-            +
-                "DgyMjgiLCJmaW5hbEZlZSI6IjYyLjU1IiwiaXRlbUlkIjoiMTEzNzg5NDMiLCJvcmRlcklkIjoiVjIxMTIwNjI0MDMxNDkwIiwicGhvbmUiOiIxMzgzOTM1NTM1MiIsInByaWNlIjoiNjIuNTUiLCJxdWFudGl0eSI6IjEiLCJ0aXRsZSI6IuS8mOmFt+mFt+WWtV\n"
-            + "ZJUOS8muWRmO+8iOWto+WNoe"
-                + "+8iSJ9LCJpZGVudGl0eV9pZCI6IkNNVjE0MzAxOTM5Iiwic291cmNlIjoiMSIsInZlcnNpb24iOiIyLjAifQ==";
-        String reqDecode = new String(Base64.decodeBase64(base64Req.getBytes()));
-        System.out.println(reqDecode);
-
-        String signCheck = reqDecode.substring(0, reqDecode.indexOf("{"));
-        System.out.println(signCheck);
-        String paramCheck = reqDecode.substring(reqDecode.indexOf("{"));
-        System.out.println(paramCheck);
-
-        char[] arrayCh2 = paramCheck.toCharArray();
-        Arrays.sort(arrayCh2);
-        String sortParamStr2 = new String(arrayCh2);
-
-        String md5Str2 = secretKey + sortParamStr2;
-        String sign2 = StringUtils.lowerCase(Md5Util.MD5(md5Str2));
-
-        System.out.println(sign2.equals(signCheck));
-
-        JSONObject param = JSON.parseObject(paramCheck);
-        String paramData = param.getString("data");
-
-        Map<String, String> paramMap = JSON.parseObject(paramData, Map.class);
-
-        System.out.println(paramMap);
 
     }
 
     @Test
-    public void test249() {
-
-        String paramCheck = "{\"source\":\"1\",\"version\":\"2.0\",\"identity_id\":\"CMV12345678\","
-            + "\"data\":{\"discount\":\"\",\"finalFee\":\"135.0\",\"itemId\":\"1000280\",\"orderId\":\"V16110114687522\","
-            + "\"phone\":\"13700000000\",\"price\":\"130.0\",\"quantity\":\"1\",\"title\":\"测试\"}}";
-        JSONObject param = JSON.parseObject(paramCheck);
-        String paramData = param.getString("data");
-        Map<String, String> paramMap = JSON.parseObject(paramData, Map.class);
-
-        if(StringUtils.isEmpty(paramMap.get("phone"))) {
-            System.out.println(1);
-        }
-        if(StringUtils.isEmpty(paramMap.get("orderId"))) {
-            System.out.println(2);
-        }
-        if(StringUtils.isEmpty(paramMap.get("itemId"))) {
-            System.out.println(3);
-        }
-
-
-        //身份id
-        String identityId = param.getString("identity_id");
-        if(StringUtils.isEmpty(identityId)) {
-            System.out.println(4);
-        }
-        paramMap.put("identityId", identityId);
-        //三方活动id
-        String thirdActivityId = "abc";
-        if(StringUtils.isEmpty(thirdActivityId)) {
-            System.out.println(5);
-        }
-
-        paramMap.put("thirdActivityId", thirdActivityId);
-
-        String str = "{\"@type\":\"com.alidme.xtrade.client.message.TradeOrderMessage\","
-            + "\"attributes\":{\"attrMap\":{\"@type\":\"java.util.LinkedHashMap\",\"delivery_type\":\"3\"}},"
-            + "\"code\":null,\"id\":\"com.youku.ott.app\",\"nodeType\":\"DELIVERY_SUCCESS\",\"oneId\":325576788,"
-            + "\"order\":{\"attributes\":{\"attrMap\":{\"@type\":\"java.util.LinkedHashMap\",\"hi\":\"phone:BRAVIA 4K "
-            + "UR2\",\"bonus\":\"2400\",\"cibn_subject_id\":\"92\",\"delivery_relate_benefits\":\"[]\","
-            + "\"channel\":\"tv@7\",\"vmp_code\":\"buy_h5\",\"pid\":\"52f8ca2b4982124b\",\"can_refund\":\"true\","
-            + "\"order_promotion_fob\":\"false\",\"merchant_id\":\"20171227ZH02015004\","
-            + "\"valid_duration\":\"2678400000\",\"tid\":\"212c950716392317463314261e0fe0\",\"en_spm\":\"detail.vipbuy\","
-            + "\"source_ip\":\"115.199.194.142\",\"upgrade_from_package_set_code\":\"14\","
-            + "\"from_middle_ground\":\"true\",\"upgrade_to_package_set_code\":\"13\",\"cycle_buy_type\":\"0\","
-            + "\"scenario\":\"vipup\",\"delivery_type\":\"3\",\"client\":\"null:null\",\"id\":\"com.youku.ott.app\","
-            + "\"scm\":\"20140732.0.0.crm_20140732-manual-999_1_0_0_212c950716392317463314261e0fe0"
-            + "-100929_100257_10445_4_2064_385_1639231746341_77f06030699140bab39ec432d9307fdb-none\",\"brand\":\"优酷\","
-            + "\"device_id\":\"92AEA922F05D7387E115AD4932E16F05\",\"os\":\"null:null\","
-            + "\"crm_touch_point_code\":\"ott_cashier_multi_components_up\",\"crm_goods_id\":\"100929\","
-            + "\"receivings\":\"[{\\\"activityId\\\":29705,\\\"name\\\":\\\"【正式-dp专用-升级酷喵】5元档-月卡（5元）\\\","
-            + "\\\"receivingId\\\":29705}]\",\"sku_id\":\"11937527\",\"pay_channel_code\":\"17\",\"env\":\"production\","
-            + "\"delivery_target\":\"rights\",\"tags\":\"1006,1011,ykvip-index,weex,plato,full-screen\","
-            + "\"spu_key\":\"up_diamond\",\"license\":\"7\",\"spm\":\"a2h07.13758154_NEWUPGRADERENDER_KMVIPUP\","
-            + "\"category_key\":\"vip_upgrade\",\"product_type\":\"VIP会员\",\"app_key\":\"24679788\","
-            + "\"pay_latest_time\":\"300000\",\"force_retry\":\"false\","
-            + "\"order_sequence\":\"439fe061cdd442358f899d17313d7099\",\"channel_tags\":\"{}\"}},\"bizType\":0,"
-            + "\"confirmFee\":500,\"deliverState\":1,\"detail\":true,\"failReason\":null,\"gmtCreate\":1639231753000,"
-            + "\"gmtModified\":1639231759000,\"id\":62519050380239,\"offerId\":3534773607,\"oneId\":325576788,"
-            + "\"outId\":\"2677037579\",\"parentId\":62519050380239,\"payPrice\":500,\"payState\":3,"
-            + "\"payTime\":1639231759000,\"productId\":1536,\"productName\":\"升级酷喵VIP-1个月\","
-            + "\"productPicUrl\":\"https://img.alicdn.com/imgextra/i2/O1CN01GNHkQl27ez8S0VJF1_!!6000000007823-2-tps-192"
-            + "-192.png\",\"quantity\":1,\"refundState\":9,\"sellerId\":135,\"state\":1,\"tagPrice\":2900,"
-            + "\"unitPrice\":2900},\"orderDelivery\":{\"attributes\":{\"attrMap\":{\"@type\":\"java.util"
-            + ".LinkedHashMap\"}},\"confirmTime\":null,\"deliveryState\":2,\"deliveryTime\":1639231760215,"
-            + "\"deliveryType\":3,\"gmtCreate\":1639231759000,\"gmtModified\":1639231759000,\"id\":4806997258,"
-            + "\"offerId\":3534773607,\"offerState\":1,\"oneId\":325576788,\"operator\":null,\"orderId\":62519050380239,"
-            + "\"outBizId\":null,\"sellerId\":135,\"state\":1},\"orderId\":62519050380239,"
-            + "\"payOrder\":{\"attributes\":{\"attrMap\":{\"@type\":\"java.util.LinkedHashMap\","
-            + "\"pay_channel_out_code\":\"00600110\","
-            + "\"pay_channel_res"
-            +
-            "\":\"aHR0cHM6Ly9vcGVuYXBpLmFsaXBheS5jb20vZ2F0ZXdheS5kbz9hbGlwYXlfc2RrPWFsaXBheS1zZGstamF2YS1keW5hbWljVmVyc2lvbk5vJmFwcF9pZD0yMDE3MTIxMTAwNTU3OTYxJmJpel9jb250ZW50PSU3QiUyMm91dF90cmFkZV9ubyUyMiUzQSUyMjIwMjExMjExUDUwNzc4NjAzNzklMjIlMkMlMjJ0b3RhbF9hbW91bnQlMjIlM0ElMjI1LjAwJTIyJTJDJTIyc3ViamVjdCUyMiUzQSUyMiVFNSU4RCU4NyVFNyVCQSVBNyVFOSU4NSVCNyVFNSU5NiVCNVZJUC0xJUU0JUI4JUFBJUU2JTlDJTg4JTIyJTJDJTIycHJvZHVjdF9jb2RlJTIyJTNBJTIyUVVJQ0tfV0FQX1BBWSUyMiU3RCZjaGFyc2V0PVVURi04JmZvcm1hdD1qc29uJm1ldGhvZD1hbGlwYXkudHJhZGUud2FwLnBheSZub3RpZnlfdXJsPWh0dHBzJTNBJTJGJTJGZ2F0ZXdheS55b3VrdS5jb20lMkZiYW5rJTJGYWxpcGF5X3dhcHBheV92Ml9ub3RpZnkuaHRtJnJldHVybl91cmw9aHR0cHMlM0ElMkYlMkZnYXRld2F5LnlvdWt1LmNvbSUyRmJhbmslMkZhbGlwYXlfd2FwcGF5X3YyX2NhbGxfYmFjay5odG0mc2lnbj1GMjRSaWNXTkVnZ2MlMkZ6a1liWk1GZHBzbnY4M2drUExCWmFsWGFMMDZJclNSZXNZTk5jZm1hNU1KVlFpc0ZUOVJtVjJuM3kxQTkzJTJGcUh5YlMwVXZ6cVBNbWhkNGhyTklvVmdsVXU3VWxRMWNMUk9iT2tpbXhPTTZ4dEEzYm95d3FIUThPUmZTT3ZuRWN6THZQUFVjVXRueDFNaXdnYzlyZGEzWWlRZ0ZrYmRHdzgwUjJ1JTJGc2pLJTJGWldlODJFdjFFY0tJNzRrYkxyWW5qOXE0WEdnVzhDWlA0ZzN4SHB4WE4ybHJNV29EbDRIeUJzWmx0U05mRzllJTJGandsYjJkRlBHd2FWc3pPQVdLbnV1aUFUTG54WmhEVno0OHU3U2RtZmRDSSUyQmZiZUNDMHN3WlNlYzlaRG01NjhpcEVuU3hQYXFGTVVqYlNDS0kwdmlGWCUyQmhPMjkxa0tiQSUzRCUzRCZzaWduX3R5cGU9UlNBMiZ0aW1lc3RhbXA9MjAyMS0xMi0xMSsyMiUzQTA5JTNBMTMmdmVyc2lvbj0xLjA=\",\"bank_note\":\"{\\\"p\\\":\\\"2088221779019471\\\",\\\"ver\\\":\\\"2.0\\\",\\\"alipay\\\":{\\\"receipt_amount\\\":\\\"5.00\\\",\\\"point_amount\\\":\\\"0.00\\\",\\\"buyer_pay_amount\\\":\\\"5.00\\\",\\\"invoice_amount\\\":\\\"5.00\\\",\\\"fund_bill_list\\\":[{\\\"amount\\\":\\\"5.00\\\",\\\"fundChannel\\\":\\\"ALIPAYACCOUNT\\\"}]},\\\"scenario\\\":\\\"directPay\\\",\\\"goodsId\\\":\\\"1536_11937527\\\",\\\"buyer_info\\\":{\\\"buyer_account\\\":\\\"781***@qq.com\\\",\\\"buyer_id\\\":\\\"2088002932407139\\\"},\\\"appId\\\":\\\"2017121100557961\\\",\\\"action\\\":\\\"REDIRECT_PAY\\\",\\\"appkey\\\":\\\"24679788\\\",\\\"merchantOrderId\\\":\\\"62519050380239\\\",\\\"xqueue_flag\\\":\\\"1\\\"}\",\"cycle_buy_type\":\"0\",\"bank_order_sn\":\"2021121122001407131436051395\",\"pay_type\":\"BANK\",\"pay_extra_key\":\"pay_expires_date\",\"channel_tags\":\"{}\"}},\"gmtCreate\":1639231754000,\"gmtModified\":1639231759000,\"id\":7042971036,\"oneId\":325576788,\"orderId\":62519050380239,\"payChannel\":17,\"payId\":\"202112112209JY215135\",\"payPrice\":500,\"payState\":3,\"payTime\":1639231759000,\"sellerId\":135,\"state\":1,\"totalPrice\":2900},\"refundOrder\":null,\"scenario\":\"rights\",\"success\":true,\"userData\":{\"@type\":\"java.util.LinkedHashMap\"},\"yace\":null}";
+    public void test249() throws Exception {
+        String id = "01577369296MRPxbsupply-2205544584929635884";
+        System.out.println(id.substring(id.length() - 30));
     }
 
     /**
@@ -2857,63 +2841,269 @@ public class TestTest {
     }
 
     @Test
-    public void test255() {
+    public void test255() throws Exception {
+        String url = "https://t.youku.com/yep/page/m/17i01zxr4o";
 
-        JSONObject result = new JSONObject();
-        Map<String, Object> contractRootMap = Maps.newHashMap();
-        result.put("contractRoot", contractRootMap);
+        URIBuilder builder = new URIBuilder(url);
+        builder.addParameter("a", "b");
 
-        JSONObject bodyMap = new JSONObject();
-        contractRootMap.put("body", bodyMap);
+        System.out.println(builder.toString());
 
-        String param = "{\"contractRoot\":{\"head\":{\"apiId\":\"200047\",\"channelCode\":\"202101101409\","
-            + "\"reqTime\":\"20211116170329269\",\"sign\":\"83572166e884fec38bf5dd3b90b0324d\","
-            + "\"transactionId\":\"d6589e87-4acc-4291-9eca-0222ec9f48695011\",\"version\":\"1.0\"},"
-            + "\"body\":{\"createTime\":\"20211116170329269\",\"orderItemId\":\"910213499666255872\",\"price\":0,"
-            + "\"quantity\":1,\"rightsId\":\"202101101409\",\"serverNum\":\"13396819820\",\"skuCode\":\"20211101510193\","
-            + "\"skuId\":\"0410315670-1\",\"skuName\":\"优酷随心看合约包首月\"}}}";
-
-        JSONObject root = JSON.parseObject(param);
-        JSONObject contractRoot = root.getJSONObject("contractRoot");
-        JSONObject head = contractRoot.getJSONObject("head");
-        head.remove("channelCode");
-        head.remove("apiId");
-
-        contractRootMap.put("head", head);
-
-        JSONObject params = contractRoot.getJSONObject("body");
-        params.putAll(head);
-
-        System.out.println(result);
     }
 
     @Test
-    public void test257() {
+    public void test257() throws ExecutionException, InterruptedException, TimeoutException {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        SimpleTimeLimiter simpleTimeLimiter = SimpleTimeLimiter.create(executorService);
 
-        String sign = StringUtils.lowerCase(Md5Util.MD5("S011582A010099fc2138a59cd4d96b3bb15fdbd922ec5" + "f6381f234be34f5389fe8702572e28ce"));
+        try {
+            Long a = simpleTimeLimiter.callWithTimeout(() -> timeoutTest(), 20, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            Thread.sleep(3000);
+            System.out.println("timeout");
+        }
+    }
+
+    private Long timeoutTest() throws InterruptedException {
+        Thread.sleep(1000);
+        System.out.println("超时也要执行");
+        return null;
+    }
+
+
+    @Test
+    public void test259() {
+        System.out.println(new Date().getTime());
+    }
+
+    @Test
+    public void test261() throws Exception {
+        System.out.println(UUID.randomUUID().toString().replace("-", ""));
+
+    }
+
+    @Test
+    public void test263() {
+        User user = new User("123", "abc");
+        String userName = Optional.ofNullable(user).map(u -> u.getUsername()).orElse("xixi");
+        System.out.println(userName);
+
+        List<User> users = new ArrayList<>();
+        User user1 = users.stream().findFirst().orElse(new User("default", "1234"));
+    }
+
+    @Test
+    public void test265() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+
+        Map<String, String> head = Maps.newHashMap();
+        head.put("peerId", "12345");
+        head.put("method", "method");
+        head.put("version", "4.0");
+        head.put("requestTime", DateUtil.getDateTime(new Date()));
+        head.put("transactionId", UUID.randomUUID().toString().replace("-", ""));
+
+        Map<String, String> biz = Maps.newHashMap();
+        biz.put("method", "jujie.hub.common.orderSubmit");
+        biz.put("phoneNo", "123");
+        biz.put("userAccount", "321");
+        biz.put("outOrderId", "" + System.currentTimeMillis() + (int)(Math.random()*100000));
+        biz.put("provinceCode", "省份编码");
+        biz.put("cityCode", "地市编码");
+        biz.put("goodsId", "鉴权返回的商品Id");
+
+        Map<String, Map<String, String>> param = Maps.newHashMap();
+        param.put("biz", biz);
+        param.put("head", head);
+
+        String jsonStr = JSON.toJSONString(param);
+        System.out.println("jsonStr: " + jsonStr);
+
+        JSONObject result = JSON.parseObject(jsonStr);
+        Map<String, Object> paramMap = result.getInnerMap();
+
+        Map<String, String> bizObj = (Map<String, String>)paramMap.get("biz");
+        System.out.println(bizObj.get("phoneNo"));
+
+
+        String jsonStrOrdered = AsciiSortUtil.marshal(param);
+        System.out.println("jsonStrOrdered: " + jsonStrOrdered);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(jsonStr);
+        System.out.println("signStr: " + jsonNodeToSignString(jsonNode));
+
+        String signStr = "bizParams={amount=1,array=[{phoneNo=15384054386},{phoneNo=15384054387}],outOrderId=TEST202008280001,phoneNo=15384054386,skuId=100001,userAccount=15384054386},head={method=jujie.hub.common.orderSubmit,peerId=100012,requestTime=2020-08-28 11:14:22,transactionId=awOu2gKkQ0AaMs20OAQqwI,version=2.0}";
+        String sign = sha256(signStr, "12345678906");
+        System.out.println(sign);
+        head.put("sign", sign);
+
+        System.out.println(JSON.toJSONString(param));
+    }
+
+    @Test
+    public void test267() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+
+        String body = "{\"bizParams\":{\"createTime\":\"2022-04-18 11:40:29\",\"orderId\":\"20220418102034512\","
+            + "\"outOrderId\":\"165025322950960079\",\"status\":104},\"config\":null,\"head\":{\"endpoint\":null,"
+            + "\"method\":\"jujie.hub.common.orderNotify\",\"peerId\":100116,\"requestTime\":null,\"toPeerId\":null,"
+            + "\"transactionId\":\"6EqWwogSkogamwYsKO6wCE\",\"version\":\"4.0\","
+        + "\"sign\":\"4e2ab8edfa535bea8dd97e3dca59a4b1cd596ec598c2110456fceebab78db61b\"}}";
+
+        JSONObject jsonObject = JSON.parseObject(body);
+        JSONObject head = jsonObject.getJSONObject("head");
+        head.remove("sign");
+
+        Map<String, Object> paramMap = jsonObject.getInnerMap();
+
+        String jsonStrOrdered = AsciiSortUtil.marshal(paramMap);
+
+        //获取计算签名用的字符串
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(jsonStrOrdered);
+        String signStr = this.jsonNodeToSignString(jsonNode);
+
+        String secret = "aTuWBtQ3dHAtgSR";
+        String sign = this.sha256(signStr, secret);
 
         System.out.println(sign);
+    }
 
-        String str = "-30";
-        System.out.println(Integer.parseInt(str));
+    @Test
+    public void test269() throws Exception {
+        String from = "youku_shoutao_nongchang_resource323_act_simple_H5";
 
-        System.out.println(DateUtil.addMins(new Date(), -180));
+        if(from.contains("resource")) {
+            String originFrom = from.substring(0, from.indexOf("resource")) + from.substring(from.lastIndexOf("_") + 1);
 
-        String val = "{\"youku_alipay_zfb1212_H5\":\"ngfe_tag__7b2lg8hglo\"}";
-        Map<String, String> double11TaskFromMap = JSON.parseObject(val, Map.class);
+            String extraInfo = from.substring(from.indexOf("resource"), from.lastIndexOf("_"));
 
-        System.out.println(double11TaskFromMap);
+
+            Integer bizTypeIndex = extraInfo.indexOf("_");
+
+            String abTag = "";
+            String bizType = "";
+            if(bizTypeIndex != -1) {
+                abTag = extraInfo.substring(0, extraInfo.indexOf("_"));
+                bizType = extraInfo.substring(extraInfo.indexOf("_") + 1);
+            } else {
+                abTag = extraInfo;
+            }
+
+            System.out.println(originFrom);
+            System.out.println(extraInfo);
+            System.out.println(abTag);
+            System.out.println(bizType);
+        }
+    }
+
+    @Test
+    public void test273() throws Exception {
+        String str = "{\"RSP_PARAM\":{\"BUSI_INFO\":{\"msg\":\"success\",\"code\":10000,\"data\":true,"
+            + "\"success\":true},\"PAGE_INFO\":{\"RECORD_COUNT\":\"1\"},\"PUB_INFO\":{\"MESSAGE\":\"成功\","
+        + "\"CODE\":\"A0000\",\"RSP_TIME\":\"20220929150819\",\"REQ_SERIAL_NO\":\"9786065559f54b19b214e42dac2e472a\"}}}";
+
+        ReadContext readContext = JsonPath.parse(str);
+
+        Boolean member = ConvertUtil.getJsonPathBoolean(readContext.read("$.RSP_PARAM.BUSI_INFO.data"));
+
+        System.out.println(member);
+
+
+
     }
 
 
 
-        /**
-         * 生成签名数据_HmacSHA1加密
-         *
-         * @param data 待加密的数据
-         * @param key  加密使用的key
-         * @throws NoSuchAlgorithmException
-         */
+
+    /**
+     * SHA256 加密
+     *
+     * @param str
+     * @return
+     */
+    public static String sha256(String str, String secret) throws NoSuchAlgorithmException, InvalidKeyException {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        Mac hmacSha256 = Mac.getInstance("hmacSHA256");
+
+        SecretKeySpec secKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+        hmacSha256.init(secKey);
+        byte[] bytes = hmacSha256.doFinal(str.getBytes());
+        return Hex.encodeHexString(bytes);
+    }
+
+    public static String jsonNodeToSignString(JsonNode jsonNode) {
+
+        String str = "";
+
+        Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
+        while (iterator.hasNext()) {
+
+            Map.Entry entry = iterator.next();
+            JsonNode subNode = (JsonNode) entry.getValue();
+
+            if (!StringUtils.isEmpty(str)&&!subNode.isNull()) {
+                str += "&";
+            }
+            if (subNode.isTextual()) {
+                str += entry.getKey() + "=" + subNode.asText();
+            }else if (subNode.isNumber()) {
+                str += entry.getKey() + "=" + subNode.asText();
+            }else if (subNode.isNull()) {
+                continue;
+            }
+            else if (subNode.isBoolean()) {
+                str += entry.getKey() + "=" + subNode.asBoolean();
+            } else if (subNode.isArray()) {
+
+                str += entry.getKey() + "=[";
+
+                String arrayStr ="";
+                for (JsonNode objNode : subNode) {
+                    if (!StringUtils.isEmpty(arrayStr)) {
+                        arrayStr += "&";
+                    }
+                    arrayStr +="{"+ (jsonNodeToSignString(objNode))+"}";
+                }
+                str +=arrayStr+ "]";
+            } else {
+                str += entry.getKey() + "={";
+                str += (jsonNodeToSignString(subNode));
+                str += "}";
+            }
+        }
+
+        return str;
+    }
+
+
+
+
+
+
+    private String getSign(SortedMap<String, String> parameters) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        // 所有参与传参的参数按照accsii排序（升序）
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            if (!StringUtils.isAnyBlank(value, key) && !"signature".equals(key)) {
+                stringBuilder.append(key).append("=").append(value).append("&");
+            }
+        }
+        return stringBuilder.substring(0, stringBuilder.length() - 1);
+    }
+
+    /**
+     * 生成签名数据_HmacSHA1加密
+     *
+     * @param data 待加密的数据
+     * @param key  加密使用的key
+     * @throws NoSuchAlgorithmException
+     */
     public String getSignature(String data, String key, String cryptoType) throws Exception {
 
         byte[] keyBytes = key.getBytes();

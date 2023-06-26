@@ -123,6 +123,18 @@ public class DateUtil {
 
 
     /**
+     * YYMMDDHHMM
+     */
+    public static final String DATE_CHINESE = "yyyy年mm月dd日";
+
+    /**
+     * yyyy-MM
+     */
+    public static final String MONTH_PATTERN_SHORT = "yyyyMM";
+
+
+
+    /**
      * Add specified number of days to the given date.
      *
      * @param date date
@@ -723,12 +735,21 @@ public class DateUtil {
         return pid;
     }
 
-    public static Date getToday() {
+    public static Date getTodayStart() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        return new Date(calendar.getTimeInMillis());
+    }
+
+    public static Date getTodayEnd() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
         return new Date(calendar.getTimeInMillis());
     }
 
@@ -852,5 +873,52 @@ public class DateUtil {
     public static String getThisTime() {
         return formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
     }
+
+    /**
+     * 获取当月的最后一刻
+     * @return
+     */
+    public static Date lastMonthTime(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        cal.set( cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+        return cal.getTime();
+    }
+
+
+
+    /**
+     * @param monthStr
+     * @return
+     */
+    public static Long getMonthLastTimeMillis(String monthStr) {
+        SimpleDateFormat formatter = new SimpleDateFormat(MONTH_PATTERN_SHORT);
+        try {
+            Date month = formatter.parse(monthStr);
+            Calendar cal = GregorianCalendar.getInstance();
+            cal.setTime(month);
+            cal.add(Calendar.MONTH, 1);
+            cal.set(Calendar.DATE, 0);
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            cal.set(Calendar.MILLISECOND, 000);
+            return cal.getTimeInMillis();
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    /**
+     * 获取月份
+     *
+     * @param date
+     * @return
+     */
+    public static String getMonthWithYear(Date date) {
+        String formatDate = formatDate(date, MONTH_PATTERN_SHORT);
+        return formatDate;
+    }
+
 
 }

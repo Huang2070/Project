@@ -22,14 +22,13 @@ public class SemLinkTest {
         String pid="XMTMwMA==";
         String type="json";
         String secretKey = "ED78CFC3C6C4FB";
-        String category = "电视剧";
-        String hour = "6";
+        String category = "动漫";
+        String hour = "2";
         getIncrementAddress(pid,type,secretKey,category,hour);
         Long taskIdLong = PidCodeUtile.decodePid(pid, "X");
-        System.out.println(taskIdLong);
+        System.out.println("taskId: " + taskIdLong);
         getAllAddress(pid,type,secretKey);
         getIncrementAddress(pid,type,secretKey,category,hour);
-
         getDelete(pid,secretKey,6);
 
     }
@@ -47,8 +46,7 @@ public class SemLinkTest {
             .append("timeRange="+timeRange+"&")
             .append("sign="+sign+"&")
             .append("tm="+tm);
-        System.out.println("delet\n"
-            + "    SUNING(104, \"苏宁易购\", \"SunningUnion\", 4L, 66526L),\ne: " + stringBuilder.toString());
+        System.out.println("delele: " + stringBuilder.toString());
 
     }
 
@@ -81,7 +79,6 @@ public class SemLinkTest {
 
     public static void getAllAddress(String pid,String type,String secretKey) {
         Long aa = System.currentTimeMillis();
-        System.out.println(aa.toString());
         Map<String,String> paramMap = ImmutableMap.of(
             "pid", pid,
             "tm", aa.toString(),

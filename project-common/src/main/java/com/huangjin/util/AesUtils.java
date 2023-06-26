@@ -26,10 +26,11 @@ public enum AesUtils {
 
             try {
                 Cipher cipher = Cipher.getInstance(CIPHERMODE);
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(AesUtils.to16BitBytes(password), "AES"));
+                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.decodeBase64(password), "AES"));
                 return Base64.encodeBase64String(cipher.doFinal(AesUtils.to16BitBytes(str)));
             } catch (Exception e) {
                 log.error("ENCRYPT error {} use pwd {}", str, password);
+                e.printStackTrace();
                 return null;
             }
         }

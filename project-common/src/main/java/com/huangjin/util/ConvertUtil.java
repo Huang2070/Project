@@ -52,4 +52,15 @@ public class ConvertUtil {
         }
         return null;
     }
+
+    public static Boolean getJsonPathBoolean(Object obj) {
+        if (obj instanceof Boolean) {
+            return (boolean) obj;
+        }
+        if (obj instanceof String) {
+            return Boolean.parseBoolean((String) obj);
+        }
+        return null;
+    }
+
 }

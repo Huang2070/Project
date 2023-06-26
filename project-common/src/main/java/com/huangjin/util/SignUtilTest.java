@@ -19,11 +19,24 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author jq
  */
-public class SignUtil {
+public class SignUtilTest {
 
     protected final static String NAME_VALUE_SP = "=";
 
     protected final static String GROUP_SP = "&";
+
+    /**
+     * 默认方式MD5方式
+     *
+     * @param params
+     * @param secret
+     * @return
+     * @throws Exception
+     */
+    public static String createSign(Map<String, String> params, String secret) throws Exception {
+
+        return createSign(params, secret, HMAC_MD5);
+    }
 
     /**
      * @param params 参数
@@ -67,35 +80,6 @@ public class SignUtil {
         return stringBuilder.toString();
     }
 
-    /**
-     * 默认方式MD5方式
-     *
-     * @param params
-     * @param secret
-     * @return
-     * @throws Exception
-     */
-    public static String createSign(Map<String, String> params, String secret) throws Exception {
-
-        return createSign(params, secret, HMAC_MD5);
-    }
-
-    /**
-     * @param params 参数
-     * @param secret 秘钥
-     * @return
-     * @throws Exception
-     */
-    public static String createSignForXimalaya(Map<String, String> params, String secret) {
-
-
-        String data = castParams2String(params);
-
-        String signString = data + secret;
-
-        return md5(signString);
-
-    }
 
 
     /**
@@ -149,71 +133,5 @@ public class SignUtil {
         return hs;
     }
 
-
-    /**
-     * 生成一个秘钥
-     *
-     * @return
-     */
-    public static String generateSecret() {
-        //得到一个 指定算法密钥的密钥生成器
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(HMAC_SHA1);
-            keyGenerator.init(128);
-            //生成一个密钥
-            SecretKey secretKey = keyGenerator.generateKey();
-            return byte2hex(secretKey.getEncoded());
-        } catch (Exception e) {
-        }
-
-        return null;
-
-    }
-
-    public static String md5(String sourceStr) {
-        String result = "";
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(sourceStr.getBytes());
-            byte b[] = md.digest();
-            int i;
-            StringBuffer buf = new StringBuffer("");
-            for (int offset = 0; offset < b.length; offset++) {
-                i = b[offset];
-                if (i < 0) {
-                    i += 256;
-                }
-
-                if (i < 16) {
-                    buf.append("0");
-                }
-
-                buf.append(Integer.toHexString(i));
-            }
-            result = buf.toString();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e);
-        }
-        return result;
-    }
-
-    /**
-     * 使用指定哈希算法计算摘要信息
-     * @param content 内容
-     * @param algorithm 哈希算法
-     * @return 内容摘要
-     */
-    public static String getMD5Digest(String content,String algorithm){
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
-            messageDigest.update(content.getBytes("utf8"));
-            return byte2hex(messageDigest.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 }
